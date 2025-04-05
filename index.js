@@ -115,7 +115,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ msg: "Email and password are required." });
   }
   try {
-    const checkUser = UserModel.findOne({ email });
+    const checkUser = await UserModel.findOne({ email });
     if (!checkUser) {
       return res.status(400).json({ msg: "Invalid email or password." });
     }
