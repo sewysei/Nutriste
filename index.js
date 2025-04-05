@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
