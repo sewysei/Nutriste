@@ -20,37 +20,11 @@ import { HealthProfileModel } from "./models/healthData.js";
 
 import { registerUser } from "./handler/register.js";
 
+import { verifyEmail } from "./handler/verifyEmail.js";
+
 app.post("/register", registerUser);
 
-app.get("/verify-email", async (req, res) => {
-  const { token } = req.query;
-
-  if (!token) {
-    return res.status(400).json({ msg: "Missing verification token." });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded.userId);
-
-    if (!user) {
-      return res.status(404).json({ msg: "User not found." });
-    }
-
-    if (user.isVerified) {
-      return res
-        .status(400)
-        .json({ msg: "Email already verified. Please log in " });
-    }
-
-    user.isVerified = true;
-    await user.save();
-
-    res.status(200).json({ msg: "Email successfully verified!" });
-  } catch (err) {
-    res.status(400).json({ msg: "Invalid or expired token." });
-  }
-});
+app.get("/verify-email", verifyEmail);
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
