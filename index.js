@@ -235,3 +235,5 @@ app.post("/logout", (req, res) => {
 // app.listen(8080, () => {
 //   console.log("Server running on port 8080");
 // });
+
+export const handler = serverless(app);
