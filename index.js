@@ -61,7 +61,8 @@ app.post("/register", async (req, res) => {
         from: process.env.AUTH_EMAIL,
         to: email,
         subject: "Email Verification",
-        html: `<p>Click the link to verify your email: <a href="${verificationLink}">${verificationLink}</a></p>`,
+        html: `<p>Click the link to verify your email: <a href="${verificationLink}">${verificationLink}</a></p>
+        <p>This link will expires in 6 hours</p>`,
       });
     };
 
@@ -105,6 +106,44 @@ app.get("/verify-email", async (req, res) => {
     res.status(200).json({ msg: "Email successfully verified!" });
   } catch (err) {
     res.status(400).json({ msg: "Invalid or expired token." });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ msg: "Email and password are required." });
+  }
+  try {
+    const checkUser = UserModel.findOne({ email });
+    if (!checkUser) {
+      return res.status(400).json({ msg: "Invalid email or password." });
+    }
+    if (!user.isVerified) {
+      return res
+        .status(401)
+        .json({ msg: "Please verify your email before logging in." });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid email or password." });
+    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({
+      msg: "Login successful",
+      token,
+      user: {
+        username: checkUser.username,
+        email: checkUser.email,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      msg: err.message,
+    });
   }
 });
 
