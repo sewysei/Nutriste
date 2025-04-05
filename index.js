@@ -124,11 +124,11 @@ app.post("/login", async (req, res) => {
         .status(401)
         .json({ msg: "Please verify your email before logging in." });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, checkUser.password);
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid email or password." });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: checkUser._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
