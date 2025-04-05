@@ -5,14 +5,14 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
-      required: true, // Correct way to make title required
+      required: true,
     },
-    author: String,
-    price: {
+    email: { type: String, required: true },
+    password: {
       type: Number,
       required: true,
     },
-    description: String,
+    isVerified: { type: Boolean, default: false },
   },
   {
     timestamps: true,
