@@ -1,0 +1,43 @@
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+
+const healthProfileSchema = new Schema(
+  {
+    age: {
+      type: Number,
+      required: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
+    weight: {
+      type: Number,
+      required: true,
+    },
+    activity: {
+      type: String,
+      required: true,
+    },
+    healthCondition: {
+      type: String,
+      required: true,
+    },
+    purposes: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const HealthProfileModel = mongoose.model(
+  "HealthProfile",
+  healthProfileSchema
+);

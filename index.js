@@ -2,15 +2,17 @@ import express from "express";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 connectDB();
 
-import { connectDB } from "./db.js";
+import { verifyToken } from "./verifyToken.js";
 
-import { BookModel } from "./models/books.js";
+import { connectDB } from "./db.js";
 
 import { UserModel } from "./models/users.js";
 
@@ -132,6 +134,13 @@ app.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // use HTTPS in production
+      sameSite: "Strict", // prevent CSRF
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     res.status(200).json({
       msg: "Login successful",
       token,
@@ -147,59 +156,36 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/books", async (req, res) => {
-  try {
-    const data = await BookModel.find();
-    res.status(200).json({
-      msg: "Ok",
-      data,
-    });
-  } catch (err) {
-    res.status(500).json({
-      msg: err.message,
-    });
+app.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ msg: "Email is required." });
   }
-});
-
-app.get("/books/:id", async (req, res) => {
   try {
-    const data = await BookModel.findById(req.params.id);
-
-    if (data) {
-      return res.status(200).json({
-        msg: "Ok",
-        data,
-      });
+    const checkUser = await UserModel.findOne({ email });
+    if (!checkUser) {
+      return res
+        .status(400)
+        .json({ msg: "User is not registered. Please register first." });
     }
 
-    return res.status(404).json({
-      msg: "Not Found",
-    });
-  } catch (err) {
-    res.status(500).json({
-      msg: err.message,
-    });
-  }
-});
-
-app.put("/books/:id", async (req, res) => {
-  try {
-    const { name, author, price, description } = req.body;
-    const { id } = req.params;
-    const data = await BookModel.findByIdAndUpdate(
-      id,
+    const resetToken = jwt.sign(
+      { userId: checkUser._id },
+      process.env.JWT_SECRET,
       {
-        name,
-        author,
-        price,
-        description,
-      },
-      { new: true }
+        expiresIn: "6h",
+      }
     );
-    res.status(200).json({
-      msg: "Ok",
-      data,
+    const resetLink = `https://nutriste.vercel.app/reset-password?token=${resetToken}`;
+    await transporter.sendMail({
+      from: process.env.AUTH_EMAIL,
+      to: email,
+      subject: "Reset Your Password",
+      html: `<p>Click here to reset your password: 
+             <a href="${resetLink}">${resetLink}</a></p>
+             <p>This link expires in 1 hour.</p>`,
     });
+    res.status(200).json({ msg: "Reset password email sent." });
   } catch (err) {
     res.status(500).json({
       msg: err.message,
@@ -207,33 +193,41 @@ app.put("/books/:id", async (req, res) => {
   }
 });
 
-app.post("/books", async (req, res) => {
+app.post("/reset-password", async (req, res) => {
+  const { resetToken, newPassword } = req.body;
+
+  if (!resetToken || !newPassword) {
+    return res
+      .status(400)
+      .json({ msg: "Token and new password are required." });
+  }
+
   try {
-    const { name, author, price, description } = req.body;
-    const book = new BookModel({ name, author, price, description });
-    const data = await book.save();
-    res.status(200).json({
-      msg: "Ok",
-      data,
-    });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const checkUser = await UserModel.findById(decoded.userId);
+
+    if (!checkUser) {
+      return res.status(404).json({ msg: "User not found." });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    checkUser.password = hashedPassword;
+    await checkUser.save();
+
+    res.status(200).json({ msg: "Password reset successful." });
   } catch (err) {
-    res.status(500).json({
-      msg: err.message,
-    });
+    res.status(400).json({ msg: "Invalid or expired token." });
   }
 });
 
-app.delete("/books/:id", async (req, res) => {
-  try {
-    await BookModel.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      msg: "Ok",
-    });
-  } catch (err) {
-    res.status(500).json({
-      msg: err.message,
-    });
-  }
+app.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  });
+
+  res.status(200).json({ msg: "Logged out successfully" });
 });
 
 app.listen(8080, () => {
