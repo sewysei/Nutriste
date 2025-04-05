@@ -119,7 +119,7 @@ app.post("/login", async (req, res) => {
     if (!checkUser) {
       return res.status(400).json({ msg: "Invalid email or password." });
     }
-    if (!user.isVerified) {
+    if (!checkUser.isVerified) {
       return res
         .status(401)
         .json({ msg: "Please verify your email before logging in." });
