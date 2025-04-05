@@ -16,6 +16,8 @@ import { connectDB } from "./db.js";
 
 import { UserModel } from "./models/users.js";
 
+import { HealthProfileModel } from "./models/healthData.js";
+
 app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -190,7 +192,7 @@ app.post("/forgot-password", async (req, res) => {
       subject: "Reset Your Password",
       html: `<p>Click here to reset your password: 
              <a href="${resetLink}">${resetLink}</a></p>
-             <p>This link expires in 1 hour.</p>`,
+             <p>This link expires in 6 hour.</p>`,
     });
     res.status(200).json({ msg: "Reset password email sent." });
   } catch (err) {
@@ -224,6 +226,86 @@ app.post("/reset-password", async (req, res) => {
     res.status(200).json({ msg: "Password reset successful." });
   } catch (err) {
     res.status(400).json({ msg: "Invalid or expired token." });
+  }
+});
+
+app.post("/profile", verifyToken, async (req, res) => {
+  const { age, gender, height, weight, activity, healthCondition, purposes } =
+    req.body;
+
+  if (
+    !age ||
+    !gender ||
+    !height ||
+    !weight ||
+    !activity ||
+    !healthCondition ||
+    !purposes
+  ) {
+    return res.status(400).json({ msg: "Please fill every fields required" });
+  }
+
+  try {
+    const userId = req.userId;
+    const checkHealthProfile = await HealthProfileModel.findById({ userId });
+    if (checkHealthProfile) {
+      const updatedProfile = await HealthProfileModel.findOneAndUpdate(
+        { userId },
+        {
+          age,
+          gender,
+          height,
+          weight,
+          activity,
+          healthCondition,
+          purposes,
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        msg: "Health Profile updated",
+        data: updatedProfile,
+      });
+    }
+
+    const newHealthProfile = new HealthProfileModel({
+      age,
+      gender,
+      height,
+      weight,
+      activity,
+      healthCondition,
+      purposes,
+      userId, // associate it with a user
+    });
+
+    const savedProfile = await newHealthProfile.save();
+
+    res.status(200).json({
+      msg: "Health Profile saved",
+      data: savedProfile,
+    });
+  } catch (err) {
+    res.status(400).json({ msg: err.message });
+  }
+});
+
+app.get("/profile", verifyToken, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const checkUser = await HealthProfileModel.findById({ userId });
+    if (!checkUser) {
+      res.status(404).json({
+        msg: "Health Profile not found. Please fill data at your profile first",
+      });
+    } else {
+      res.status(200).json({
+        msg: "Health Profile found",
+        data: checkUser,
+      });
+    }
+  } catch (err) {
+    res.status(400).json({ msg: err.message });
   }
 });
 

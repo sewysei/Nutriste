@@ -3,6 +3,11 @@ const { Schema } = mongoose;
 
 const healthProfileSchema = new Schema(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // or "UserModel" depending on your setup
+      required: true,
+    },
     age: {
       type: Number,
       required: true,
