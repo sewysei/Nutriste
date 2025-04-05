@@ -177,6 +177,13 @@ app.post("/forgot-password", async (req, res) => {
       }
     );
     const resetLink = `https://nutriste.vercel.app/reset-password?token=${resetToken}`;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.AUTH_EMAIL,
+        pass: process.env.AUTH_PASS,
+      },
+    });
     await transporter.sendMail({
       from: process.env.AUTH_EMAIL,
       to: email,
