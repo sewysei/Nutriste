@@ -18,70 +18,9 @@ import { UserModel } from "./models/users.js";
 
 import { HealthProfileModel } from "./models/healthData.js";
 
-app.post("/register", async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+import { registerUser } from "./handler/register.js";
 
-    if (!username || !email || !password) {
-      return res.status(500).json({
-        status: "Failed",
-        message: "Username, email, and password are required.",
-      });
-    }
-
-    const existingUser = await UserModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Email is already registered.",
-      });
-    }
-
-    const usedUsername = await UserModel.findOne({ username });
-    if (usedUsername) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Username is already taken",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({ username, email, password: hashedPassword });
-    const savedUser = await user.save();
-    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "6h",
-    });
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASS,
-      },
-    });
-
-    const sendVerificationEmail = (email, token) => {
-      const verificationLink = `https://nutriste.vercel.app/verify-email?token=${token}`;
-      return transporter.sendMail({
-        from: process.env.AUTH_EMAIL,
-        to: email,
-        subject: "Email Verification",
-        html: `<p>Click the link to verify your email: <a href="${verificationLink}">${verificationLink}</a></p>
-        <p>This link will expires in 6 hours</p>`,
-      });
-    };
-
-    await sendVerificationEmail(email, token);
-
-    res.status(200).json({
-      msg: "Register succesful, please check your email for verification",
-      savedUser,
-    });
-  } catch (err) {
-    res.status(500).json({
-      msg: err.message,
-    });
-  }
-});
+app.post("/register", registerUser);
 
 app.get("/verify-email", async (req, res) => {
   const { token } = req.query;
