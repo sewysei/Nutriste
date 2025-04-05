@@ -232,6 +232,6 @@ app.post("/logout", (req, res) => {
   res.status(200).json({ msg: "Logged out successfully" });
 });
 
-app.listen(8080, () => {
-  console.log("Server running on port 8080");
-});
+// app.listen(8080, () => {
+//   console.log("Server running on port 8080");
+// });
