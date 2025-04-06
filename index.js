@@ -21,6 +21,12 @@ app.use(cookieParser());
 
 connectDB();
 
+app.get("/", (res, req) => {
+  res.json({
+    msg: "Hello World ",
+  });
+});
+
 app.post("/register", registerUser);
 
 app.get("/verify-email", verifyEmail);
