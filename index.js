@@ -15,6 +15,7 @@ import { forgotPassword } from "./handler/forgotPass.js";
 import { resetPassword } from "./handler/resetPass.js";
 import { addProfile } from "./handler/profile.js";
 import { getProfile } from "./handler/getProfile.js";
+import { getNutritionSuggestion } from "./handler/getNutrition.js";
 import { logoutUser } from "./handler/logout.js";
 
 const app = express();
@@ -44,7 +45,7 @@ app.post("/profile", verifyToken, addProfile);
 
 app.get("/profile", verifyToken, getProfile);
 
-app.get("/nutrition", verifyToken);
+app.get("/nutrition", verifyToken, getNutritionSuggestion);
 
 app.post("/logout", logoutUser);
 
