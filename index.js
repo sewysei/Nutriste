@@ -166,7 +166,7 @@ app.post("/profile", verifyToken, async (req, res) => {
 
   try {
     const userId = req.userId;
-    const checkHealthProfile = await HealthProfileModel.findById({ userId });
+    const checkHealthProfile = await HealthProfileModel.findOne({ userId });
     if (checkHealthProfile) {
       const updatedProfile = await HealthProfileModel.findOneAndUpdate(
         { userId },
@@ -212,7 +212,7 @@ app.post("/profile", verifyToken, async (req, res) => {
 app.get("/profile", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
-    const checkUser = await HealthProfileModel.findById({ userId });
+    const checkUser = await HealthProfileModel.findOne({ userId });
     if (!checkUser) {
       res.status(404).json({
         msg: "Health Profile not found. Please fill data at your profile first",
