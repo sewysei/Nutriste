@@ -1,5 +1,6 @@
 import { UserModel } from "../models/users.js";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const verifyEmail = async (req, res) => {
@@ -29,6 +30,6 @@ export const verifyEmail = async (req, res) => {
     res.status(200).json({ msg: "Email successfully verified!" });
   } catch (err) {
     console.error("JWT error:");
-    res.status(400).json({ msg: err.message });
+    res.status(400).json({ msg: `Invalid token or ${err.message}` });
   }
 };
