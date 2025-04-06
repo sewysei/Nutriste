@@ -6,17 +6,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const resetPassword = async (req, res) => {
-  const { resetToken } = req.query;
+  const { token } = req.query;
   const { newPassword } = req.body;
 
-  if (!resetToken || !newPassword) {
-    return res
-      .status(400)
-      .json({ msg: "Token and new password are required." });
+  if (!newPassword) {
+    return res.status(400).json({ msg: "New password are required." });
   }
 
   try {
-    const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const checkUser = await UserModel.findById(decoded.userId);
 
     if (!checkUser) {
