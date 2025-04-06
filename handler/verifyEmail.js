@@ -12,7 +12,7 @@ export const verifyEmail = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded._id);
+    const user = await UserModel.findById(decoded.userId);
 
     if (!user) {
       return res.status(404).json({ msg: "User not found." });
