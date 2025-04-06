@@ -41,17 +41,17 @@ export const getNutritionSuggestion = async (req, res) => {
       const suggestion = aiResponse.text;
       const savedData = await NutritionDataModel.create({
         userId,
-        suggestion,
+        response: suggestion,
       });
 
       res.status(200).json({
         message: "Success Generate new data",
-        suggestion: savedData.suggestion,
+        suggestion: savedData.response,
       });
     } else {
       res.status(200).json({
         message: "Success Fetching data from database",
-        suggestion: existingNutritionData.suggestion,
+        suggestion: existingNutritionData.response,
       });
     }
   } catch (error) {
