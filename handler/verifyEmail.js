@@ -28,6 +28,7 @@ export const verifyEmail = async (req, res) => {
 
     res.status(200).json({ msg: "Email successfully verified!" });
   } catch (err) {
-    res.status(400).json({ msg: "Invalid or expired token." });
+    console.error("JWT error:");
+    res.status(400).json({ msg: err.message });
   }
 };
