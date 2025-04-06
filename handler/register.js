@@ -43,7 +43,12 @@ export const registerUser = async (req, res) => {
 
     res.status(200).json({
       msg: "Register succesful, please check your email for verification",
-      savedUser,
+      user: {
+        id: savedUser._id,
+        username: savedUser.username,
+        email: savedUser.email,
+        token,
+      },
     });
   } catch (err) {
     res.status(500).json({

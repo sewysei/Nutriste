@@ -3,13 +3,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const verifyEmail = async (req, res) => {
-  const { token } = req.query;
+  const token = req.query.token;
 
   if (!token) {
     return res.status(400).json({ msg: "Missing verification token." });
   }
 
   try {
+    console.log("Received token:", token);
+    console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await UserModel.findById(decoded.userId);
 

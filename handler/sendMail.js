@@ -15,6 +15,6 @@ export const sendVerificationEmail = (email, token) => {
     to: email,
     subject: "Email Verification",
     html: `<p>Click the link to verify your email: <a href="${verificationLink}">${verificationLink}</a></p>
-        <p>This link will expires in 6 hours</p>`,
+         <p>This link will expire in 6 hours</p>`,
   });
 };
