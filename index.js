@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import serverless from "serverless-http";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -12,16 +14,12 @@ app.use(cookieParser());
 connectDB();
 
 import { verifyToken } from "./verifyToken.js";
-
 import { connectDB } from "./db.js";
-
 import { UserModel } from "./models/users.js";
-
 import { HealthProfileModel } from "./models/healthData.js";
-
 import { registerUser } from "./handler/register.js";
-
 import { verifyEmail } from "./handler/verifyEmail.js";
+import { verifyToken } from "./verifyToken.js";
 
 app.post("/register", registerUser);
 
@@ -104,7 +102,7 @@ app.post("/forgot-password", async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: email,
       subject: "Reset Your Password",
-      html: `<p>Click here to reset your password: 
+      html: `<p>Click here to reset your password:
              <a href="${resetLink}">${resetLink}</a></p>
              <p>This link expires in 6 hour.</p>`,
     });
@@ -233,8 +231,8 @@ app.post("/logout", (req, res) => {
   res.status(200).json({ msg: "Logged out successfully" });
 });
 
-// app.listen(8080, () => {
-//   console.log("Server running on port 8080");
-// });
+app.listen(8080, () => {
+  console.log("Server running on port 8080");
+});
 
 export const handler = serverless(app);
