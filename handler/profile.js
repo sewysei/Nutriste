@@ -21,7 +21,7 @@ export const addProfile = async (req, res) => {
     const checkHealthProfile = await HealthProfileModel.findOne({ userId });
     if (checkHealthProfile) {
       const updatedProfile = await HealthProfileModel.findOneAndUpdate(
-        { userId },
+        userId,
         {
           age,
           gender,
@@ -35,7 +35,15 @@ export const addProfile = async (req, res) => {
       );
       return res.status(200).json({
         msg: "Health Profile updated",
-        data: updatedProfile,
+        data: `${
+          (updatedProfile.age,
+          updatedProfile.gender,
+          updatedProfile.height,
+          updatedProfile.weight,
+          updatedProfile.activity,
+          updatedProfile.healthCondition,
+          updatedProfile.purposes)
+        }`,
       });
     }
 
