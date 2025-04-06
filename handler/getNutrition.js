@@ -38,7 +38,7 @@ export const getNutritionSuggestion = async (req, res) => {
         Keep the answer simple and under 300 words`,
       });
 
-      const suggestion = await aiResponse.text();
+      const suggestion = aiResponse.text;
       const savedData = await NutritionDataModel.create({
         userId,
         suggestion,

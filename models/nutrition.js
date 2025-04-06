@@ -15,11 +15,6 @@ const nutritionDataSchema = new Schema(
   },
   {
     timestamps: true,
-    toJSON: {
-      transform(doc, ret) {
-        delete ret.__v;
-      },
-    },
   }
 );
 
