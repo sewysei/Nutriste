@@ -231,8 +231,8 @@ app.get("/verify-email", verifyEmail);
 //   res.status(200).json({ msg: "Logged out successfully" });
 // });
 
-// app.listen(8080, () => {
-//   console.log("Server running on port 8080");
-// });
+app.listen(8080, () => {
+  console.log("Server running on port 8080");
+});
 
-export const handler = serverless(app);
+// export const handler = serverless(app);
