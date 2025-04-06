@@ -35,15 +35,15 @@ export const addProfile = async (req, res) => {
       );
       return res.status(200).json({
         msg: "Health Profile updated",
-        data: `${
-          (updatedProfile.age,
-          updatedProfile.gender,
-          updatedProfile.height,
-          updatedProfile.weight,
-          updatedProfile.activity,
-          updatedProfile.healthCondition,
-          updatedProfile.purposes)
-        }`,
+        data: {
+          age: updatedProfile.age,
+          gender: updatedProfile.gender,
+          height: updatedProfile.height + " cm",
+          weight: updatedProfile.weight + " kg",
+          activity: updatedProfile.activity,
+          health: updatedProfile.healthCondition,
+          purposes: updatedProfile.purposes,
+        },
       });
     }
 
