@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 connectDB();
 
-app.get("/", (res, req) => {
+app.get("/", (req, res) => {
   const msg = "Hello World";
   res.json({
     msg,
