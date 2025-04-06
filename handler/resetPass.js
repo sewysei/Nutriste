@@ -6,7 +6,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const resetPassword = async (req, res) => {
-  const { resetToken, newPassword } = req.body;
+  const { resetToken } = req.query;
+  const { newPassword } = req.body;
 
   if (!resetToken || !newPassword) {
     return res
@@ -15,7 +16,7 @@ export const resetPassword = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
     const checkUser = await UserModel.findById(decoded.userId);
 
     if (!checkUser) {
