@@ -38,8 +38,8 @@ export const addProfile = async (req, res) => {
         data: {
           age: updatedProfile.age,
           gender: updatedProfile.gender,
-          height: updatedProfile.height + " cm",
-          weight: updatedProfile.weight + " kg",
+          height: updatedProfile.height,
+          weight: updatedProfile.weight,
           activity: updatedProfile.activity,
           health: updatedProfile.healthCondition,
           purposes: updatedProfile.purposes,
@@ -61,8 +61,16 @@ export const addProfile = async (req, res) => {
     const savedProfile = await newHealthProfile.save();
 
     res.status(200).json({
-      msg: "Health Profile saved",
-      data: savedProfile,
+      msg: "Health Profile updated",
+      data: {
+        age: savedProfile.age,
+        gender: savedProfile.gender,
+        height: savedProfile.height,
+        weight: savedProfile.weight,
+        activity: savedProfile.activity,
+        health: savedProfile.healthCondition,
+        purposes: savedProfile.purposes,
+      },
     });
   } catch (err) {
     res.status(400).json({ msg: err.message });

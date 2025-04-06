@@ -1,48 +1,29 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const healthProfileSchema = new Schema(
+const nutritionDataSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User", // or "UserModel" depending on your setup
       required: true,
     },
-    age: {
-      type: Number,
-      required: true,
-    },
-    gender: {
-      type: String,
-      required: true,
-    },
-    height: {
-      type: Number,
-      required: true,
-    },
-    weight: {
-      type: Number,
-      required: true,
-    },
-    activity: {
-      type: String,
-      required: true,
-    },
-    healthCondition: {
-      type: String,
-      required: true,
-    },
-    purposes: {
+    response: {
       type: String,
       required: true,
     },
   },
   {
     timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.__v;
+      },
+    },
   }
 );
 
-export const HealthProfileModel = mongoose.model(
-  "HealthProfile",
-  healthProfileSchema
+export const NutritionDataModel = mongoose.model(
+  "NutritionData",
+  nutritionDataSchema
 );

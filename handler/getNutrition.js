@@ -1,31 +1,8 @@
 import { HealthProfileModel } from "../models/healthData";
-
-const getUserHealthData = async (userId) => {
-  const checkUser = await HealthProfileModel.findOne({ userId });
-
-  return checkUser;
-};
-
-const checkUserNutritionData = async (userId) => {
-  const db = getDatabase();
-  const userHealthCollection = db.collection("userNutrition");
-
-  return await userHealthCollection.findOne({ userId });
-};
-
-const saveUserNutritionData = async (userId, suggestion) => {
-  const db = getDatabase();
-  const userNutritionCollection = db.collection("userNutrition");
-
-  const nutritionData = {
-    userId,
-    suggestion,
-    createdAt: new Date(),
-  };
-
-  await userNutritionCollection.insertOne(nutritionData);
-  return nutritionData;
-};
+import { NutritionDataModel } from "../models/nutrition";
+import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getNutritionSuggestion = async (req, res) => {
   try {
@@ -35,7 +12,7 @@ export const getNutritionSuggestion = async (req, res) => {
     }
 
     // Fetch user's health data
-    const userData = await getUserHealthData(userId);
+    const userData = await HealthProfileModel.findOne({ userId });
     if (!userData) {
       return res.status(404).json({
         message:
@@ -43,18 +20,38 @@ export const getNutritionSuggestion = async (req, res) => {
       });
     }
 
-    const existingNutritionData = await checkUserNutritionData(userId);
+    const existingNutritionData = await NutritionDataModel.findOne({ userId });
     if (!existingNutritionData) {
-      const suggestion = aiResponse.text;
-      const savedData = await saveUserNutritionData(userId, suggestion);
+      const ai = new GoogleGenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+      });
 
-      res
-        .status(200)
-        .json({ message: "Success Generate new data", suggestion: savedData });
+      const aiResponse = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: `Give me nutrition suggestion for people with characteristics such as
+        - Age: ${userData.age}
+        - Gender: ${userData.gender}
+        - Height: ${userData.height} cm
+        - Weight: ${userData.weight} kg
+        - Health Conditions: ${userData.healthCondition}
+        - Goal: ${userData.purposes};
+        Keep the answer simple and under 300 words`,
+      });
+
+      const suggestion = await aiResponse.text();
+      const savedData = await NutritionDataModel.create({
+        userId,
+        suggestion,
+      });
+
+      res.status(200).json({
+        message: "Success Generate new data",
+        suggestion: savedData.suggestion,
+      });
     } else {
       res.status(200).json({
         message: "Success Fetching data from database",
-        suggestion: existingNutritionData,
+        suggestion: existingNutritionData.suggestion,
       });
     }
   } catch (error) {
