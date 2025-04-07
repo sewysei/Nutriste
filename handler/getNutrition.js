@@ -1,6 +1,5 @@
 import { NutritionDataModel } from "../models/nutrition.js";
 import { HealthProfileModel } from "../models/healthData.js";
-import { regenerateNutritionAndMeal } from "./regenerateAI.js";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,21 +16,13 @@ export const getNutritionSuggestion = async (req, res) => {
     // Check if suggestion already exists
     let nutritionData = await NutritionDataModel.findOne({ userId });
 
-    if (!nutritionData) {
+    if (!nutritionData || profile.updatedAt > nutritionData.updatedAt) {
       // If not found, generate based on profile
       const profile = await HealthProfileModel.findOne({ userId });
       if (!profile) {
         return res.status(404).json({
           message:
             "Health profile not found. Please fill in your profile first.",
-        });
-      }
-      if (profile.createdAt < profile.updatedAt) {
-        await regenerateNutritionAndMeal(userId, profile);
-        nutritionData = await NutritionDataModel.findOne({ userId });
-        return res.status(200).json({
-          message: "Success update nutrition ",
-          response: nutritionData.response,
         });
       }
 
