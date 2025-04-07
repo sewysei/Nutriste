@@ -1,6 +1,10 @@
 import { MealPlanModel } from "../models/mealPlan.js";
+import { HealthProfileModel } from "../models/healthData.js"; // Needed to get user data
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 dotenv.config();
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const getMealPlan = async (req, res) => {
   try {
@@ -9,12 +13,42 @@ export const getMealPlan = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const mealPlanData = await MealPlanModel.findOne({ userId });
+    // Check if meal plan already exists
+    let mealPlanData = await MealPlanModel.findOne({ userId });
     if (!mealPlanData) {
-      return res.status(404).json({
-        message:
-          "No meal plan data found. Please update your profile to generate meal plans.",
+      // Get user health profile to generate meal plan
+      const profile = await HealthProfileModel.findOne({ userId });
+      if (!profile) {
+        return res.status(404).json({
+          message:
+            "Health profile not found. Please fill in your profile first.",
+        });
+      }
+
+      const { age, gender, height, weight, healthCondition, purposes } =
+        profile;
+
+      const mealPlanResponse = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: `Give me a meal plan for a person with the following:
+        - Age: ${age}
+        - Gender: ${gender}
+        - Height: ${height} cm
+        - Weight: ${weight} kg
+        - Health Conditions: ${healthCondition}
+        - Goal: ${purposes}
+        Keep the answer simple and under 300 words.`,
       });
+
+      const mealPlanText = await mealPlanResponse.text();
+
+      // Save new meal plan
+      const newMealPlan = new MealPlanModel({
+        userId,
+        response: mealPlanText,
+      });
+
+      mealPlanData = await newMealPlan.save(); // Save and update reference
     }
 
     return res.status(200).json({
@@ -22,6 +56,7 @@ export const getMealPlan = async (req, res) => {
       suggestion: mealPlanData.response,
     });
   } catch (error) {
+    console.error("Error generating meal plan:", error.message);
     res.status(500).json({ message: "Failed to fetch suggestion" });
   }
 };
