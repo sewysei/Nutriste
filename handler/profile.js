@@ -18,21 +18,19 @@ export const addProfile = async (req, res) => {
 
   try {
     const userId = req.userId;
-    const checkHealthProfile = await HealthProfileModel.findOne({ userId });
-    if (checkHealthProfile) {
-      const updatedProfile = await HealthProfileModel.findOneAndUpdate(
-        { userId },
-        {
-          age,
-          gender,
-          height,
-          weight,
-          activity,
-          healthCondition,
-          purposes,
-        },
-        { new: true }
-      );
+    const existingProfile = await HealthProfileModel.findOne({ userId });
+
+    if (existingProfile) {
+      existingProfile.age = age;
+      existingProfile.gender = gender;
+      existingProfile.height = height;
+      existingProfile.weight = weight;
+      existingProfile.activity = activity;
+      existingProfile.healthCondition = healthCondition;
+      existingProfile.purposes = purposes;
+
+      const updatedProfile = await existingProfile.save();
+
       return res.status(200).json({
         msg: "Health Profile updated",
         data: {
@@ -64,12 +62,12 @@ export const addProfile = async (req, res) => {
       msg: "Health Profile updated",
       data: {
         age: savedProfile.age,
-        gender: savedProfile.gender,
-        height: savedProfile.height,
-        weight: savedProfile.weight,
-        activity: savedProfile.activity,
-        health: savedProfile.healthCondition,
-        purposes: savedProfile.purposes,
+        gender: Profile.gender,
+        height: Profile.height,
+        weight: Profile.weight,
+        activity: Profile.activity,
+        health: Profile.healthCondition,
+        purposes: Profile.purposes,
       },
     });
   } catch (err) {
