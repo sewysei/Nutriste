@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const mealPLanSchema = new Schema(
+const mealPlanSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -18,4 +18,4 @@ const mealPLanSchema = new Schema(
   }
 );
 
-export const MealPlanModel = mongoose.model("MealPlan", mealPLanSchema);
+export const MealPlanModel = mongoose.model("MealPlan", mealPlanSchema);

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import dotenv from "dotenv";
+dotenv.config();
 
 const healthProfileSchema = new Schema(
   {
@@ -43,23 +45,29 @@ const healthProfileSchema = new Schema(
 );
 
 healthProfileSchema.pre("save", async function (next) {
-  if (
-    !this.isModified("age") &&
-    !this.isModified("gender") &&
-    !this.isModified("height") &&
-    !this.isModified("weight") &&
-    !this.isModified("activity") &&
-    !this.isModified("healthCondition") &&
-    !this.isModified("purposes")
-  )
-    return next();
+  const fieldsToCheck = [
+    "age",
+    "gender",
+    "height",
+    "weight",
+    "activity",
+    "healthCondition",
+    "purposes",
+  ];
+
+  const shouldRegenerate = fieldsToCheck.some((field) =>
+    this.isModified(field)
+  );
+  if (!shouldRegenerate) return next();
 
   try {
     const { GoogleGenAI } = await import("@google/genai");
     const { NutritionDataModel } = await import("./nutrition.js");
     const { MealPlanModel } = await import("./mealPlan.js");
+
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+    // Meal plan generation
     const mealPlanResponse = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `Give me meal plan for people with characteristics such as
@@ -72,7 +80,7 @@ healthProfileSchema.pre("save", async function (next) {
         Keep the answer simple and under 300 words.`,
     });
 
-    const mealPlanSuggestion = mealPlanResponse.text;
+    const mealPlanSuggestion = await mealPlanResponse.text();
 
     await MealPlanModel.findOneAndUpdate(
       { userId: this.userId },
@@ -80,6 +88,7 @@ healthProfileSchema.pre("save", async function (next) {
       { upsert: true, new: true }
     );
 
+    // Nutrition suggestion generation
     const nutritionResponse = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `Give me nutrition suggestion for people with characteristics such as
@@ -91,6 +100,7 @@ healthProfileSchema.pre("save", async function (next) {
         - Goal: ${this.purposes};
         Keep the answer simple and under 300 words.`,
     });
+
     const nutritionSuggestion = await nutritionResponse.text();
 
     await NutritionDataModel.findOneAndUpdate(
