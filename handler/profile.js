@@ -1,5 +1,4 @@
 import { HealthProfileModel } from "../models/healthData.js";
-import { regenerateAIPlans } from "./regenerateAI.js";
 
 export const addProfile = async (req, res) => {
   const { age, gender, height, weight, activity, healthCondition, purposes } =
@@ -31,7 +30,6 @@ export const addProfile = async (req, res) => {
       existingProfile.purposes = purposes;
 
       const updatedProfile = await existingProfile.save();
-      await regenerateAIPlans(updatedProfile);
 
       return res.status(200).json({
         msg: "Health Profile updated",
@@ -59,7 +57,6 @@ export const addProfile = async (req, res) => {
     });
 
     const savedProfile = await newHealthProfile.save();
-    await regenerateAIPlans(savedProfile);
     res.status(200).json({
       msg: "Health Profile updated",
       data: {

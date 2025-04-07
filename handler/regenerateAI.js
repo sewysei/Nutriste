@@ -1,54 +1,66 @@
 import { GoogleGenAI } from "@google/genai";
-import { MealPlanModel } from "../models/mealPlan.js";
-import { NutritionDataModel } from "../models/nutrition.js";
+import { MealPlanModel } from "../models/mealPlan";
+import { NutritionDataModel } from "../models/nutrition";
 import dotenv from "dotenv";
+import { HealthProfileModel } from "../models/healthData";
 dotenv.config();
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-export const regenerateAIPlans = async (profile) => {
-  const { age, gender, height, weight, healthCondition, purposes, userId } =
-    profile;
-
+export const regenerateNutritionAndMeal = async (userId, userProfile) => {
   try {
-    // Meal Plan
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    // Nutrition Suggestion
     const mealPlanResponse = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `Give me meal plan for people with characteristics such as
-      - Age: ${age}
-      - Gender: ${gender}
-      - Height: ${height} cm
-      - Weight: ${weight} kg
-      - Health Conditions: ${healthCondition}
-      - Goal: ${purposes};
+      - Age: ${userProfile.age}
+      - Gender: ${userProfile.gender}
+      - Height: ${userProfile.height} cm
+      - Weight: ${userProfile.weight} kg
+      - Health Conditions: ${userProfile.healthCondition}
+      - Goal: ${userProfile.purposes};
       Keep the answer simple and under 300 words.`,
     });
-
-    const mealPlanText = await mealPlanResponse.text();
-    await MealPlanModel.findOneAndUpdate(
+    const mealPlanText = mealPlanResponse.text;
+    await HealthProfileModel.updateOne(
       { userId },
-      { userId, response: mealPlanText },
-      { upsert: true, new: true }
+      {
+        $set: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true } // create if not exist
     );
-
-    // Nutrition Suggestion
+    await MealPlanModel.updateOne(
+      { userId },
+      {
+        $set: {
+          response: mealPlanText,
+        },
+      },
+      { upsert: true } // create if not exist
+    );
     const nutritionResponse = await ai.models.generateContent({
       model: "gemini-2.0-flash",
       contents: `Give me nutrition suggestion for people with characteristics such as
-      - Age: ${age}
-      - Gender: ${gender}
-      - Height: ${height} cm
-      - Weight: ${weight} kg
-      - Health Conditions: ${healthCondition}
-      - Goal: ${purposes};
-      Keep the answer simple and under 300 words.`,
+          - Age: ${userProfile.age}
+          - Gender: ${userProfile.gender}
+          - Height: ${userProfile.height} cm
+          - Weight: ${userProfile.weight} kg
+          - Health Conditions: ${userProfile.healthCondition}
+          - Goal: ${userProfile.purposes};
+          Keep the answer simple and under 300 words.`,
     });
+    const nutritionText = nutritionResponse.text;
 
-    const nutritionText = await nutritionResponse.text();
-    await NutritionDataModel.findOneAndUpdate(
+    await NutritionDataModel.updateOne(
       { userId },
-      { userId, response: nutritionText },
-      { upsert: true, new: true }
+      {
+        $set: {
+          response: nutritionText,
+        },
+      },
+      { upsert: true } // create if not exist
     );
   } catch (err) {
     console.error("AI generation failed:", err.message);
