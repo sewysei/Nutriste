@@ -40,7 +40,7 @@ export const getMealPlan = async (req, res) => {
         Keep the answer simple and under 300 words.`,
       });
 
-      const mealPlanText = await mealPlanResponse.text();
+      const mealPlanText = mealPlanResponse.text;
 
       // Save new meal plan
       const newMealPlan = new MealPlanModel({
