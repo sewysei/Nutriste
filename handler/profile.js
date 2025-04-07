@@ -1,5 +1,5 @@
 import { HealthProfileModel } from "../models/healthData.js";
-import { NutritionDataModel } from "./nutrition.js";
+import { NutritionDataModel } from "../models/nutrition.js";
 import { MealPlanModel } from "./mealPlan.js";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
