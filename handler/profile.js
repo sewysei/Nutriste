@@ -1,4 +1,9 @@
 import { HealthProfileModel } from "../models/healthData.js";
+import { NutritionDataModel } from "./nutrition.js";
+import { MealPlanModel } from "./mealPlan.js";
+import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const addProfile = async (req, res) => {
   const { age, gender, height, weight, activity, healthCondition, purposes } =
@@ -57,6 +62,72 @@ export const addProfile = async (req, res) => {
     });
 
     const savedProfile = await newHealthProfile.save();
+    healthProfileSchema.pre("save", async function (next) {
+      const fieldsToCheck = [
+        "age",
+        "gender",
+        "height",
+        "weight",
+        "activity",
+        "healthCondition",
+        "purposes",
+      ];
+
+      const shouldRegenerate = fieldsToCheck.some((field) =>
+        this.isModified(field)
+      );
+      if (!shouldRegenerate) return next();
+
+      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+        // Meal plan generation
+        const mealPlanResponse = await ai.models.generateContent({
+          model: "gemini-2.0-flash",
+          contents: `Give me meal plan for people with characteristics such as
+        - Age: ${this.age}
+        - Gender: ${this.gender}
+        - Height: ${this.height} cm
+        - Weight: ${this.weight} kg
+        - Health Conditions: ${this.healthCondition}
+        - Goal: ${this.purposes};
+        Keep the answer simple and under 300 words.`,
+        });
+
+        const mealPlanSuggestion = await mealPlanResponse.text();
+
+        await MealPlanModel.findOneAndUpdate(
+          { userId: this.userId },
+          { userId: this.userId, response: mealPlanSuggestion },
+          { upsert: true, new: true }
+        );
+
+        // Nutrition suggestion generation
+        const nutritionResponse = await ai.models.generateContent({
+          model: "gemini-2.0-flash",
+          contents: `Give me nutrition suggestion for people with characteristics such as
+        - Age: ${this.age}
+        - Gender: ${this.gender}
+        - Height: ${this.height} cm
+        - Weight: ${this.weight} kg
+        - Health Conditions: ${this.healthCondition}
+        - Goal: ${this.purposes};
+        Keep the answer simple and under 300 words.`,
+        });
+
+        const nutritionSuggestion = await nutritionResponse.text();
+
+        await NutritionDataModel.findOneAndUpdate(
+          { userId: this.userId },
+          { userId: this.userId, response: nutritionSuggestion },
+          { upsert: true, new: true }
+        );
+      } catch (error) {
+        console.error("Meal plan or Nutrition regeneration failed:", error);
+      }
+
+      next();
+    });
 
     res.status(200).json({
       msg: "Health Profile updated",
