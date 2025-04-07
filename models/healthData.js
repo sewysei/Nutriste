@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { NutritionDataModel } from "./nutrition.js";
+import { MealPlanModel } from "./mealPlan.js";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -61,10 +64,6 @@ healthProfileSchema.pre("save", async function (next) {
   if (!shouldRegenerate) return next();
 
   try {
-    const { GoogleGenAI } = await import("@google/genai");
-    const { NutritionDataModel } = await import("./nutrition.js");
-    const { MealPlanModel } = await import("./mealPlan.js");
-
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     // Meal plan generation
