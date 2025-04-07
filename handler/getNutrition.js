@@ -47,14 +47,21 @@ export const getNutritionSuggestion = async (req, res) => {
           .status(500)
           .json({ message: "Failed to generate suggestion" });
       }
-      const newNutritionData = new NutritionDataModel({
-        userId,
-        response: nutritionText,
-      });
-
-      nutritionData = await newNutritionData.save(); // Save and use this data
+      const NutritionData = await NutritionDataModel.updateOne(
+        { userId },
+        {
+          $set: {
+            response: nutritionText,
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true } // this will insert if it doesn't exist
+      );
+      return res.status(200).json({
+        message: "Success fetching data",
+        suggestion: NutritionData.response,
+      }); // Save and use this data
     }
-
     return res.status(200).json({
       message: "Success fetching data",
       suggestion: nutritionData.response,

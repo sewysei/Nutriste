@@ -42,18 +42,21 @@ export const getMealPlan = async (req, res) => {
       const mealPlanText = mealPlanResponse.text;
 
       // Save new meal plan
-      const newMealPlan = new MealPlanModel({
-        userId,
-        response: mealPlanText,
+      const MealPlan = await MealPlanModel.updateOne(
+        { userId },
+        {
+          $set: {
+            response: mealPlanText,
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true } // this will insert if it doesn't exist
+      );
+      return res.status(200).json({
+        message: "Success fetching data",
+        suggestion: mealPlanData.response,
       });
-
-      mealPlanData = await newMealPlan.save(); // Save and update reference
     }
-
-    return res.status(200).json({
-      message: "Success fetching data",
-      suggestion: mealPlanData.response,
-    });
   } catch (error) {
     console.error("Error generating meal plan:", error.message);
     res.status(500).json({ message: "Failed to fetch suggestion" });
