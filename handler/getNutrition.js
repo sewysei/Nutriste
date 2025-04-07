@@ -16,9 +16,9 @@ export const getNutritionSuggestion = async (req, res) => {
     // Check if suggestion already exists
     let nutritionData = await NutritionDataModel.findOne({ userId });
 
+    const profile = await HealthProfileModel.findOne({ userId });
     if (!nutritionData || profile.updatedAt > nutritionData.updatedAt) {
       // If not found, generate based on profile
-      const profile = await HealthProfileModel.findOne({ userId });
       if (!profile) {
         return res.status(404).json({
           message:

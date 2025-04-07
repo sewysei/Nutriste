@@ -15,9 +15,9 @@ export const getMealPlan = async (req, res) => {
 
     // Check if meal plan already exists
     let mealPlanData = await MealPlanModel.findOne({ userId });
+    const profile = await HealthProfileModel.findOne({ userId });
     if (!mealPlanData || profile.updatedAt > mealPlanData.updatedAt) {
       // Get user health profile to generate meal plan
-      const profile = await HealthProfileModel.findOne({ userId });
       if (!profile) {
         return res.status(404).json({
           message:
