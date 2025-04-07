@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
-import { MealPlanModel } from "../models/mealPlan";
-import { NutritionDataModel } from "../models/nutrition";
+import { MealPlanModel } from "../models/mealPlan.js";
+import { NutritionDataModel } from "../models/nutrition.js";
 import dotenv from "dotenv";
-import { HealthProfileModel } from "../models/healthData";
+import { HealthProfileModel } from "../models/healthData.js";
 dotenv.config();
 
 export const regenerateNutritionAndMeal = async (userId, userProfile) => {
