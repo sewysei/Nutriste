@@ -54,9 +54,13 @@ export const getMealPlan = async (req, res) => {
       );
       return res.status(200).json({
         message: "Success fetching data",
-        suggestion: mealPlanData.response,
+        suggestion: MealPlan.response,
       });
     }
+    return res.status(200).json({
+      message: "Success fetching data",
+      suggestion: mealPlanData.response,
+    });
   } catch (error) {
     console.error("Error generating meal plan:", error.message);
     res.status(500).json({ message: "Failed to fetch suggestion" });
