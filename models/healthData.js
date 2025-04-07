@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
+import { NutritionDataModel } from "./nutrition.js";
+import { MealPlanModel } from "./mealPlan.js";
+import { GoogleGenAI } from "@google/genai";
 
 const healthProfileSchema = new Schema(
   {

@@ -1,9 +1,4 @@
 import { HealthProfileModel } from "../models/healthData.js";
-import { NutritionDataModel } from "../models/nutrition.js";
-import { MealPlanModel } from "../models/mealPlan.js";
-import { GoogleGenAI } from "@google/genai";
-import dotenv from "dotenv";
-dotenv.config();
 
 export const addProfile = async (req, res) => {
   const { age, gender, height, weight, activity, healthCondition, purposes } =
@@ -67,12 +62,12 @@ export const addProfile = async (req, res) => {
       msg: "Health Profile updated",
       data: {
         age: savedProfile.age,
-        gender: Profile.gender,
-        height: Profile.height,
-        weight: Profile.weight,
-        activity: Profile.activity,
-        health: Profile.healthCondition,
-        purposes: Profile.purposes,
+        gender: savedProfile.gender,
+        height: savedProfile.height,
+        weight: savedProfile.weight,
+        activity: savedProfile.activity,
+        health: savedProfile.healthCondition,
+        purposes: savedProfile.purposes,
       },
     });
   } catch (err) {
