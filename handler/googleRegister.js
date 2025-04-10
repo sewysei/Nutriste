@@ -47,10 +47,9 @@ export const googleSignIn = async (req, res) => {
       await user.save();
     }
 
-    const token = await jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "6h",
     });
-
     sendVerificationEmail(email, token);
 
     res.status(200).json({
