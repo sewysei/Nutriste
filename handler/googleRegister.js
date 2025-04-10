@@ -48,7 +48,7 @@ export const googleSignIn = async (req, res) => {
   } catch (error) {
     res.status(401).json({
       status: "Failed",
-      message: "Token Google tidak valid",
+      message: error.message,
     });
   }
 };
