@@ -44,8 +44,7 @@ export const getNutritionSuggestion = async (req, res) => {
         - Tujuan: ${purposes}
         Berikan jawaban yang simpel dan dibawah 300 kata. Jangan berikan rekomendasi mengenai makanan, berikan saran nutrisinya saja.
         Formatkan teks tanpa tanda bintang (**), 
-        tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah". 
-        Gunakan bahasa yang jelas dan langsung.`,
+        tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah".`,
       });
 
       const nutritionText = nutritionResponse.text;
