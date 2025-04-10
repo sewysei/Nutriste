@@ -46,7 +46,7 @@ export const getMealPlan = async (req, res) => {
       const mealPlanText = mealPlanResponse.text;
 
       // Save new meal plan
-      const MealPlan = await MealPlanModel.updateOne(
+      await MealPlanModel.updateOne(
         { userId },
         {
           $set: {
@@ -59,7 +59,7 @@ export const getMealPlan = async (req, res) => {
       return res.status(200).json({
         status: "Failed",
         message: "Success fetching data",
-        suggestion: MealPlan.response,
+        suggestion: mealPlanText,
       });
     }
     return res.status(200).json({

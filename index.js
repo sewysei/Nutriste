@@ -5,9 +5,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDB } from "./db.js";
+import { verifyToken } from "./verifyToken.js";
 import { registerUser } from "./handler/register.js";
 import { verifyEmail } from "./handler/verifyEmail.js";
-import { verifyToken } from "./verifyToken.js";
 import { loginUser } from "./handler/login.js";
 import { forgotPassword } from "./handler/forgotPass.js";
 import { resetPassword } from "./handler/resetPass.js";

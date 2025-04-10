@@ -53,7 +53,7 @@ export const getNutritionSuggestion = async (req, res) => {
         });
       }
 
-      const NutritionData = await NutritionDataModel.updateOne(
+      await NutritionDataModel.updateOne(
         { userId },
         {
           $set: {
@@ -66,7 +66,7 @@ export const getNutritionSuggestion = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Berhasil membuat data nutrisi. ",
-        suggestion: NutritionData.response,
+        suggestion: nutritionText,
       }); // Save and use this data
     }
     return res.status(200).json({

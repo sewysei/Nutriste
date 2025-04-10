@@ -47,7 +47,7 @@ export const registerUser = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         status: "Failed",
-        message: "Please enter a valid email address.",
+        message: "Tolong masukkan email yang valid.",
       });
     }
 

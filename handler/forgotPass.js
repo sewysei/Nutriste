@@ -7,12 +7,22 @@ dotenv.config();
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   if (!email) {
     return res.status(400).json({
       status: "Failed",
       message: "Email tidak boleh kosong",
     });
   }
+
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Tolong masukkan email yang valid.",
+    });
+  }
+
   try {
     const checkUser = await UserModel.findOne({ email });
     if (!checkUser) {
@@ -40,7 +50,7 @@ export const forgotPassword = async (req, res) => {
     await transporter.sendMail({
       from: process.env.AUTH_EMAIL,
       to: email,
-      subject: "Reset Your Password",
+      subject: "Reset Password",
       html: `<p>Klik link ini untuk reset password:
              <a href="${resetLink}">${resetLink}</a></p>
              <p>Link akan kadaluarsa dalam 6 jam.</p>`,
