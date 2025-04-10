@@ -8,21 +8,30 @@ dotenv.config();
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ msg: "Email and password are required." });
+    return res.status(400).json({
+      status: "Failed",
+      message: "Email dan password tidak boleh kosong",
+    });
   }
   try {
     const checkUser = await UserModel.findOne({ email });
     if (!checkUser) {
-      return res.status(400).json({ msg: "Invalid email or password." });
+      return res.status(400).json({
+        status: "Failed",
+        message: "Email atau password tidak valid",
+      });
     }
     if (!checkUser.isVerified) {
-      return res
-        .status(401)
-        .json({ msg: "Please verify your email before logging in." });
+      return res.status(401).json({
+        status: "Failed",
+        message: "Silahkan verifikasi email Anda terlebih dahulu",
+      });
     }
     const isMatch = await bcrypt.compare(password, checkUser.password);
     if (!isMatch) {
-      return res.status(400).json({ msg: "Invalid email or password." });
+      return res
+        .status(400)
+        .json({ status: "Failed", message: "Email atau password salah" });
     }
     const token = jwt.sign({ userId: checkUser._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
@@ -36,7 +45,8 @@ export const loginUser = async (req, res) => {
     });
 
     res.status(200).json({
-      msg: "Login successful",
+      status: "Success",
+      message: "Login berhasil",
       token,
       user: {
         username: checkUser.username,
@@ -45,7 +55,8 @@ export const loginUser = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
-      msg: err.message,
+      status: "Failed",
+      message: err.message,
     });
   }
 };

@@ -7,7 +7,10 @@ export const verifyEmail = async (req, res) => {
   const token = req.query.token;
 
   if (!token) {
-    return res.status(400).json({ msg: "Missing verification token." });
+    return res.status(400).json({
+      status: "Failed",
+      message: "Token verifikasi tidak dapat ditemukan",
+    });
   }
 
   try {
@@ -15,21 +18,30 @@ export const verifyEmail = async (req, res) => {
     const user = await UserModel.findById(decoded.userId);
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found." });
+      return res.status(404).json({
+        status: "Failed",
+        message: "User tidak ditemukan",
+      });
     }
 
     if (user.isVerified) {
-      return res
-        .status(400)
-        .json({ msg: "Email already verified. Please log in " });
+      return res.status(400).json({
+        status: "Failed",
+        message: "Email sudah terverifikasi. Silahkan log in",
+      });
     }
 
     user.isVerified = true;
     await user.save();
 
-    res.status(200).json({ msg: "Email successfully verified!" });
+    res.status(200).json({
+      status: "Success",
+      message: "Berhasil memverifikasi email!",
+    });
   } catch (err) {
-    console.error("JWT error:");
-    res.status(400).json({ msg: `Invalid token or ${err.message}` });
+    res.status(400).json({
+      status: "Failed",
+      message: `Token Invalid atau ${err.message}`,
+    });
   }
 };

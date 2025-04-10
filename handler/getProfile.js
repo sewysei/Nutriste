@@ -6,15 +6,28 @@ export const getProfile = async (req, res) => {
     const checkUser = await HealthProfileModel.findOne({ userId });
     if (!checkUser) {
       res.status(404).json({
-        msg: "Health Profile not found. Please fill data at your profile first",
+        status: "Failed",
+        msg: "Profil Kesehatan tidak ditemukan. Mohon mengisi data di profil terlebih dahulu.",
       });
     } else {
       res.status(200).json({
-        msg: "Health Profile found",
-        data: checkUser,
+        status: "Success",
+        msg: "Profil Kesehatan ditemukan.",
+        data: {
+          age: checkUser.age,
+          gender: checkUser.gender,
+          height: checkUser.height,
+          weight: checkUser.weight,
+          activity: checkUser.activity,
+          healthCondition: checkUser.healthCondition,
+          purposes: checkUser.purposes,
+        },
       });
     }
   } catch (err) {
-    res.status(400).json({ msg: err.message });
+    res.status(400).json({
+      status: "Failed",
+      message: err.message,
+    });
   }
 };

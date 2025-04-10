@@ -13,7 +13,7 @@ export const sendVerificationEmail = (email, token) => {
   return transporter.sendMail({
     from: process.env.AUTH_EMAIL,
     to: email,
-    subject: "Email Verification",
+    subject: "Email Verifikasi",
     html: `<p>Click the link to verify your email: <a href="${verificationLink}">${verificationLink}</a></p>
          <p>This link will expire in 6 hours</p>`,
   });

@@ -10,7 +10,10 @@ export const getMealPlan = async (req, res) => {
   try {
     const userId = req.userId;
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({
+        status: "Failed",
+        message: "Akses ditolak.",
+      });
     }
 
     // Check if meal plan already exists
@@ -20,8 +23,9 @@ export const getMealPlan = async (req, res) => {
       // Get user health profile to generate meal plan
       if (!profile) {
         return res.status(404).json({
+          status: "Failed",
           message:
-            "Health profile not found. Please fill in your profile first.",
+            "Profil Kesehatan tidak ditemukan. Mohon mengisi data di profil terlebih dahulu.",
         });
       }
       const { age, gender, height, weight, healthCondition, purposes } =
@@ -29,14 +33,14 @@ export const getMealPlan = async (req, res) => {
 
       const mealPlanResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Give me a meal plan for a person with the following:
-        - Age: ${age}
+        contents: `Berikan rencana makanan untuk seseorang dengan:
+        - Umur: ${age}
         - Gender: ${gender}
-        - Height: ${height} cm
-        - Weight: ${weight} kg
-        - Health Conditions: ${healthCondition}
-        - Goal: ${purposes}
-        Keep the answer simple and under 300 words.`,
+        - Tinggi: ${height} cm
+        - Berat: ${weight} kg
+        - Kondisi Kesehatan: ${healthCondition}
+        - Tujuan  : ${purposes}
+        Berikan jawaban yang simpel dan dibawah 300 kata.`,
       });
 
       const mealPlanText = mealPlanResponse.text;
@@ -53,16 +57,21 @@ export const getMealPlan = async (req, res) => {
         { upsert: true } // this will insert if it doesn't exist
       );
       return res.status(200).json({
+        status: "Failed",
         message: "Success fetching data",
         suggestion: MealPlan.response,
       });
     }
     return res.status(200).json({
+      status: "Failed",
       message: "Success fetching data",
       suggestion: mealPlanData.response,
     });
   } catch (error) {
     console.error("Error generating meal plan:", error.message);
-    res.status(500).json({ message: "Failed to fetch suggestion" });
+    res.status(500).json({
+      status: "Failed",
+      message: "Failed to fetch suggestion",
+    });
   }
 };

@@ -10,7 +10,10 @@ export const getNutritionSuggestion = async (req, res) => {
   try {
     const userId = req.userId;
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({
+        status: "Failed",
+        message: "Akses ditolak.",
+      });
     }
 
     // Check if suggestion already exists
@@ -21,8 +24,9 @@ export const getNutritionSuggestion = async (req, res) => {
       // If not found, generate based on profile
       if (!profile) {
         return res.status(404).json({
+          status: "Failed",
           message:
-            "Health profile not found. Please fill in your profile first.",
+            "Profil Kesehatan tidak ditemukan. Mohon mengisi data di profil terlebih dahulu.",
         });
       }
 
@@ -31,22 +35,24 @@ export const getNutritionSuggestion = async (req, res) => {
 
       const nutritionResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Give me a nutrition suggestion for a person with the following:
-        - Age: ${age}
+        contents: `Berikan saran nutrisi untuk seseorang dengan:
+        - Umur: ${age}
         - Gender: ${gender}
-        - Height: ${height} cm
-        - Weight: ${weight} kg
-        - Health Conditions: ${healthCondition}
-        - Goal: ${purposes}
-        Keep the answer simple and under 300 words.`,
+        - Tinggi: ${height} cm
+        - Berat: ${weight} kg
+        - Kondisi Kesehatan: ${healthCondition}
+        - Tujuan: ${purposes}
+        Berikan jawaban yang simpel dan dibawah 300 kata. Jangan berikan rekomendasi mengenai makanan, berikan saran nutrisinya saja.`,
       });
 
       const nutritionText = nutritionResponse.text;
       if (!nutritionText) {
-        return res
-          .status(500)
-          .json({ message: "Failed to generate suggestion" });
+        return res.status(500).json({
+          status: "Failed",
+          message: "Gagal menghasilkan saran nutrisi.",
+        });
       }
+
       const NutritionData = await NutritionDataModel.updateOne(
         { userId },
         {
@@ -58,16 +64,20 @@ export const getNutritionSuggestion = async (req, res) => {
         { upsert: true } // this will insert if it doesn't exist
       );
       return res.status(200).json({
-        message: "Success fetching data",
+        status: "Success",
+        message: "Berhasil membuat data nutrisi. ",
         suggestion: NutritionData.response,
       }); // Save and use this data
     }
     return res.status(200).json({
-      message: "Success fetching data",
+      status: "Success",
+      message: "Berhasil mengambil data dari database.",
       suggestion: nutritionData.response,
     });
   } catch (err) {
-    console.error("Error generating nutrition suggestion:", err.message);
-    res.status(500).json({ message: "Failed to fetch suggestion" });
+    res.status(500).json({
+      status: "Failed",
+      message: err.message,
+    });
   }
 };

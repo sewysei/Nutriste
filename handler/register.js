@@ -7,20 +7,24 @@ dotenv.config();
 
 export const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-      return res.status(500).json({
-        status: "Failed",
-        message: "Username, email, and password are required.",
-      });
-    }
+    const { username, email, password, confirmPassword, agreedToTerms } =
+      req.body;
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         status: "Failed",
-        message: "Email is already registered.",
+        message: "Email sudah terdaftar",
+      });
+    }
+
+    if (!username || !email || !password || !confirmPassword) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Username, email, dan password tidak boleh kosong",
       });
     }
 
@@ -28,7 +32,44 @@ export const registerUser = async (req, res) => {
     if (usedUsername) {
       return res.status(400).json({
         status: "Failed",
-        message: "Username is already taken",
+        message: "Username sudah diambil",
+      });
+    }
+
+    if (!usernameRegex.test(username)) {
+      return res.status(400).json({
+        status: "Failed",
+        message:
+          "Username harus diantara 3-20 karakter dan hanya mengandung huruf, angka, dan underscore.",
+      });
+    }
+
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        status: "Failed",
+        message:
+          "Password harus setidaknya 8 karakter dan mengandung setidaknya satu huruf dan satu angka.",
+      });
+    }
+
+    if (password != confirmPassword) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Password dan confirm password tidak cocok",
+      });
+    }
+
+    if (!agreedToTerms) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Kamu harus menyetujui Syarat & Kebijakan Privasi.",
       });
     }
 
@@ -42,7 +83,8 @@ export const registerUser = async (req, res) => {
     await sendVerificationEmail(email, token);
 
     res.status(200).json({
-      msg: "Register succesful, please check your email for verification",
+      status: "Success",
+      message: "Pendaftaran berhasil, cek email Anda untuk verifikasi",
       user: {
         id: savedUser._id,
         username: savedUser.username,
@@ -52,7 +94,8 @@ export const registerUser = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({
-      msg: err.message,
+      status: "Failed",
+      message: err.message,
     });
   }
 };

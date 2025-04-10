@@ -13,7 +13,10 @@ export const addProfile = async (req, res) => {
     !healthCondition ||
     !purposes
   ) {
-    return res.status(400).json({ msg: "Please fill every fields required" });
+    return res.status(400).json({
+      status: "Failed",
+      message: "Mohon isi semua kolom yang diperlukan.",
+    });
   }
 
   try {
@@ -32,7 +35,8 @@ export const addProfile = async (req, res) => {
       const updatedProfile = await existingProfile.save();
 
       return res.status(200).json({
-        msg: "Health Profile updated",
+        status: "Success",
+        message: "Profil Kesehatan diperbarui.",
         data: {
           age: updatedProfile.age,
           gender: updatedProfile.gender,
@@ -58,7 +62,8 @@ export const addProfile = async (req, res) => {
 
     const savedProfile = await newHealthProfile.save();
     res.status(200).json({
-      msg: "Health Profile updated",
+      status: "Success",
+      message: "Profil Kesehatan berhasil dibuat.",
       data: {
         age: savedProfile.age,
         gender: savedProfile.gender,
@@ -70,6 +75,9 @@ export const addProfile = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(400).json({ msg: err.message });
+    res.status(400).json({
+      status: "Failed",
+      message: err.message,
+    });
   }
 };

@@ -8,14 +8,18 @@ dotenv.config();
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return res.status(400).json({ msg: "Email is required." });
+    return res.status(400).json({
+      status: "Failed",
+      message: "Email tidak boleh kosong",
+    });
   }
   try {
     const checkUser = await UserModel.findOne({ email });
     if (!checkUser) {
-      return res
-        .status(400)
-        .json({ msg: "User is not registered. Please register first." });
+      return res.status(400).json({
+        status: "Failed",
+        message: "Pengguna belum terdaftar. Silahkan daftar terlebih dahulu.",
+      });
     }
 
     const resetToken = jwt.sign(
@@ -37,14 +41,19 @@ export const forgotPassword = async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: email,
       subject: "Reset Your Password",
-      html: `<p>Click here to reset your password:
+      html: `<p>Klik link ini untuk reset password:
              <a href="${resetLink}">${resetLink}</a></p>
-             <p>This link expires in 6 hour.</p>`,
+             <p>Link akan kadaluarsa dalam 6 jam.</p>`,
     });
-    res.status(200).json({ msg: "Reset password email sent." });
+    res.status(200).json({
+      status: "Success",
+      message:
+        "Email untuk me-reset password terkirim. Cek email Anda untuk reset password. ",
+    });
   } catch (err) {
     res.status(500).json({
-      msg: err.message,
+      status: "Failed",
+      message: err.message,
     });
   }
 };

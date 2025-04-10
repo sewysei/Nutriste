@@ -10,7 +10,10 @@ export const resetPassword = async (req, res) => {
   const { newPassword } = req.body;
 
   if (!newPassword) {
-    return res.status(400).json({ msg: "New password are required." });
+    return res.status(400).json({
+      status: "Failed",
+      msg: "Password baru tidak boleh kosong.",
+    });
   }
 
   try {
@@ -18,15 +21,24 @@ export const resetPassword = async (req, res) => {
     const checkUser = await UserModel.findById(decoded.userId);
 
     if (!checkUser) {
-      return res.status(404).json({ msg: "User not found." });
+      return res.status(404).json({
+        status: "Failed",
+        msg: "Pengguna tidak ditemukan.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     checkUser.password = hashedPassword;
     await checkUser.save();
 
-    res.status(200).json({ msg: "Password reset successful." });
+    res.status(200).json({
+      status: "Success",
+      msg: "Reset password berhasil.",
+    });
   } catch (err) {
-    res.status(400).json({ msg: "Invalid or expired token." });
+    res.status(400).json({
+      status: "Failed",
+      msg: "Token tidak valid atau kadaluarsa.",
+    });
   }
 };
