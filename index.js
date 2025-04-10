@@ -7,6 +7,7 @@ dotenv.config();
 import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
 import { registerUser } from "./handler/register.js";
+import { googleSignIn } from "./handler/googleRegister.js";
 import { verifyEmail } from "./handler/verifyEmail.js";
 import { loginUser } from "./handler/login.js";
 import { forgotPassword } from "./handler/forgotPass.js";
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/register", registerUser);
+
+app.post("/auth/google", loginUser);
 
 app.get("/verify-email", verifyEmail);
 
