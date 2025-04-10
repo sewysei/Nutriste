@@ -20,10 +20,26 @@ export const googleSignIn = async (req, res) => {
 
     let user = await UserModel.findOne({ email });
 
+    if (user && !user.isGoogleUser) {
+      return res.status(400).json({
+        status: "Failed",
+        message:
+          "Email sudah terdaftar dengan metode lain. Silakan login secara manual.",
+      });
+    }
     if (!user) {
       // User belum ada, daftarkan
+      let usernameBase = name.replace(/\s+/g, "_").toLowerCase();
+      let username = usernameBase;
+      let count = 1;
+
+      while (await UserModel.findOne({ username })) {
+        username = `${usernameBase}${count}`;
+        count++;
+      }
+
       user = new UserModel({
-        username: name.replace(/\s+/g, "_").toLowerCase(),
+        username,
         email,
         password: null, // kosong karena pakai Google
         isGoogleUser: true, // opsional

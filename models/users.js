@@ -13,6 +13,10 @@ const userSchema = new Schema(
       required: true,
     },
     isVerified: { type: Boolean, default: false },
+    isGoogleUser: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
