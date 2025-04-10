@@ -30,7 +30,9 @@ export const googleSignIn = async (req, res) => {
     }
     if (!user) {
       // User belum ada, daftarkan
-      let usernameBase = name.replace(/\s+/g, "_").toLowerCase();
+      let usernameBase = name
+        ? name.replace(/\s+/g, "_").toLowerCase()
+        : "googleuser";
       let username = usernameBase;
       let count = 1;
 
@@ -38,21 +40,25 @@ export const googleSignIn = async (req, res) => {
         username = `${usernameBase}${count}`;
         count++;
       }
-
       user = new UserModel({
         username,
         email,
         password: null, // kosong karena pakai Google
         isGoogleUser: true, // opsional
+        isVerified: true,
       });
       await user.save();
     }
-
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "6h",
+      expiresIn: "7d",
     });
 
-    sendVerificationEmail(email, jwtToken);
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: true, // use HTTPS in production
+      sameSite: "Strict", // prevent CSRF
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     res.status(200).json({
       status: "Success",
