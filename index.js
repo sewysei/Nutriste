@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.post("/register", registerUser);
 
-app.post("/auth/google", loginUser);
+app.post("/auth/google", googleSignIn);
 
 app.get("/verify-email", verifyEmail);
 
