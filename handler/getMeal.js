@@ -40,7 +40,9 @@ export const getMealPlan = async (req, res) => {
         - Berat: ${weight} kg
         - Kondisi Kesehatan: ${healthCondition}
         - Tujuan  : ${purposes}
-        Berikan jawaban yang simpel dan dibawah 300 kata.`,
+        Berikan jawaban yang simpel dan dibawah 300 kata. Formatkan teks tanpa tanda bintang (**), 
+        tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah". 
+        Gunakan bahasa yang jelas dan langsung.`,
       });
 
       const mealPlanText = mealPlanResponse.text;
