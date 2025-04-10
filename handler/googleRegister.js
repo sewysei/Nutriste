@@ -1,6 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { sendVerificationEmail } from "./sendMail.js";
 import { UserModel } from "../models/users.js";
 dotenv.config();
 
