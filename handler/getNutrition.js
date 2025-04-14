@@ -42,7 +42,7 @@ export const getNutritionSuggestion = async (req, res) => {
         - Berat: ${weight} kg
         - Kondisi Kesehatan: ${healthCondition}
         - Tujuan: ${purposes}
-        Berikan jawaban yang simpel dan dibawah 300 kata. Jangan berikan rekomendasi mengenai makanan, berikan saran nutrisinya saja.
+        Berikan jawaban dibawah 300 kata. Jangan berikan rekomendasi mengenai makanan, berikan saran nutrisinya saja.
         Formatkan teks tanpa tanda bintang (**), 
         tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah".`,
       });

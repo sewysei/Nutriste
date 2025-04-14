@@ -33,14 +33,14 @@ export const getMealPlan = async (req, res) => {
 
       const mealPlanResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Berikan rencana makanan untuk seseorang dengan:
+        contents: `Berikan perencanaan makanan untuk seseorang dengan:
         - Umur: ${age}
         - Gender: ${gender}
         - Tinggi: ${height} cm
         - Berat: ${weight} kg
         - Kondisi Kesehatan: ${healthCondition}
         - Tujuan  : ${purposes}
-        Berikan jawaban yang simpel dan dibawah 300 kata. Formatkan teks tanpa tanda bintang (**), 
+        Berikan makanan yang kompleks namun dibawah 300 kata. Formatkan teks tanpa tanda bintang (**), 
         tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah". `,
       });
 
