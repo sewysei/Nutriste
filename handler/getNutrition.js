@@ -35,16 +35,23 @@ export const getNutritionSuggestion = async (req, res) => {
 
       const nutritionResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Berikan saran nutrisi untuk seseorang dengan:
-        - Umur: ${age}
-        - Gender: ${gender}
-        - Tinggi: ${height} cm
-        - Berat: ${weight} kg
-        - Kondisi Kesehatan: ${healthCondition}
-        - Tujuan: ${purposes}
-        Berikan jawaban dibawah 300 kata. Jangan berikan rekomendasi mengenai makanan, berikan saran nutrisinya saja.
-        Formatkan teks tanpa tanda bintang (**), 
-        tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah".`,
+        contents: `Buat saran nutrisi untuk seorang ${gender} usia ${age}, 
+        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
+        Tuliskan output dalam format JSON saja. Tidak ada penjelasan atau teks di luar JSON.
+        Format JSON harus memiliki struktur:
+        {
+          "nutrition_advice": {
+            "calorie_needs": "Jumlah kalori harian yang disarankan dalam kkal",
+            "protein": "Saran asupan protein harian dan alasan",
+            "carbohydrates": "Saran asupan karbohidrat harian dan alasan",
+            "fat": "Saran asupan lemak harian dan alasan",
+            "vitamins_minerals": "Vitamin/mineral yang perlu diperhatikan",
+            "hydration": "Saran konsumsi air",
+            "overall_tips": "Tips tambahan secara umum untuk mencapai tujuan"
+          }
+        }
+        Jawaban maksimal 300 kata secara keseluruhan. Jangan gunakan tanda bintang, cetak tebal, atau frasa pembuka seperti 'Berikut adalah' atau 'Tentu'.
+        `,
       });
 
       const nutritionText = nutritionResponse.text;

@@ -15,11 +15,18 @@ export const getMealPlan = async (req, res) => {
         message: "Akses ditolak.",
       });
     }
-
     // Check if meal plan already exists
     let mealPlanData = await MealPlanModel.findOne({ userId });
     const profile = await HealthProfileModel.findOne({ userId });
-    if (!mealPlanData || profile.updatedAt > mealPlanData.updatedAt) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to start of today
+
+    const mealPlanOutdated =
+      !mealPlanData ||
+      profile.updatedAt > mealPlanData.updatedAt ||
+      new Date(mealPlanData.updatedAt).setHours(0, 0, 0, 0) < today;
+
+    if (mealPlanOutdated) {
       // Get user health profile to generate meal plan
       if (!profile) {
         return res.status(404).json({
@@ -33,15 +40,17 @@ export const getMealPlan = async (req, res) => {
 
       const mealPlanResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Berikan perencanaan makanan untuk seseorang dengan:
-        - Umur: ${age}
-        - Gender: ${gender}
-        - Tinggi: ${height} cm
-        - Berat: ${weight} kg
-        - Kondisi Kesehatan: ${healthCondition}
-        - Tujuan  : ${purposes}
-        Berikan makanan yang kompleks namun dibawah 300 kata. Formatkan teks tanpa tanda bintang (**), 
-        tanpa cetak tebal, dan tanpa frasa pembuka seperti "Tentu" atau "Berikut adalah". `,
+        contents: `Buat perencanaan makanan untuk seorang ${gender} usia ${age}, 
+        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
+        Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata.
+        JSON harus berisi array dengan nama "meal_plan", dan setiap elemen adalah sebuah objek makanan dengan properti:
+        - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack Sore)
+        - food (nama makanan atau menu)
+        - calories (jumlah kalori dalam angka)
+        - protein (dalam gram, misalnya "20g")
+        - carbohydrates (dalam gram)
+        - fat (dalam gram)
+        Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.`,
       });
 
       const mealPlanText = mealPlanResponse.text;

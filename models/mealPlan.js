@@ -9,8 +9,13 @@ const mealPlanSchema = new Schema(
       required: true,
     },
     response: {
-      type: String,
+      type: Object,
       required: true,
+    },
+    isEaten: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {
