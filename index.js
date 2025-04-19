@@ -8,6 +8,7 @@ import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
 import { registerUser } from "./handler/register.js";
 import { googleSignIn } from "./handler/googleRegister.js";
+import { googlePassword } from "./handler/password.js";
 import { verifyEmail } from "./handler/verifyEmail.js";
 import { loginUser } from "./handler/login.js";
 import { forgotPassword } from "./handler/forgotPass.js";
@@ -31,17 +32,19 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/register", registerUser);
+app.post("/auth/register", registerUser);
 
 app.post("/auth/google", googleSignIn);
 
-app.get("/verify-email", verifyEmail);
+app.post("/auth/password", verifyToken, googlePassword);
 
-app.post("/login", loginUser);
+app.get("/auth/verify-email", verifyEmail);
 
-app.post("/forgot-password", forgotPassword);
+app.post("/auth/login", loginUser);
 
-app.post("/reset-password", resetPassword);
+app.post("/auth/forgot-password", forgotPassword);
+
+app.post("/auth/reset-password", resetPassword);
 
 app.post("/profile", verifyToken, addProfile);
 
@@ -51,7 +54,7 @@ app.get("/nutrition", verifyToken, getNutritionSuggestion);
 
 app.get("/meal-plan", verifyToken, getMealPlan);
 
-app.post("/logout", logoutUser);
+app.post("/auth/logout", logoutUser);
 
 app.listen(8080, () => {
   console.log("Server running on port 8080");

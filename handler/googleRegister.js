@@ -1,7 +1,6 @@
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { sendVerificationEmail } from "./sendMail.js";
 import { UserModel } from "../models/users.js";
 dotenv.config();
 
@@ -40,15 +39,16 @@ export const googleSignIn = async (req, res) => {
         username = `${usernameBase}${count}`;
         count++;
       }
+
       user = new UserModel({
         username,
         email,
         password: null, // kosong karena pakai Google
         isGoogleUser: true, // opsional
-        isVerified: true,
       });
       await user.save();
     }
+
     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
