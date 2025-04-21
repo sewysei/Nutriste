@@ -1,6 +1,7 @@
 import { MealPlanModel } from "../models/mealPlan.js";
 import { HealthProfileModel } from "../models/healthData.js"; // Needed to get user data
 import { GoogleGenAI } from "@google/genai";
+import { getImageForFoodBase64 } from "./getMealImage.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -57,6 +58,10 @@ export const getMealPlan = async (req, res) => {
       const mealPlanText = mealPlanResponse.text;
       const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
       const mealPlanJson = JSON.parse(cleanedText);
+      for (let item of mealPlanJson.meal_plan) {
+        const imageBase64 = await getImageForFoodBase64(item.food);
+        item.image = imageBase64; // simpan ke properti image
+      }
 
       // Save new meal plan
       await MealPlanModel.updateOne(
