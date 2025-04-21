@@ -8,7 +8,7 @@ dotenv.config();
 export const googlePassword = async (req, res) => {
   try {
     const userId = req.userId;
-    let user = await UserModel.findById({ userId });
+    let user = await UserModel.findById(userId);
 
     if (!userId && !user.isGoogleUser) {
       return res.status(401).json({
