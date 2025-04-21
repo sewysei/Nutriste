@@ -51,11 +51,11 @@ export const getNutritionSuggestion = async (req, res) => {
           }
         }
         Jawaban maksimal 300 kata secara keseluruhan. Jangan gunakan tanda bintang, cetak tebal, atau frasa pembuka seperti 'Berikut adalah' atau 'Tentu'.
-        `,
+        Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`,
       });
 
       const nutritionText = nutritionResponse.text;
-      const nutritionJson = JSON.parse(mealPlanText);
+      const nutritionJson = JSON.parse(nutritionText);
       if (!nutritionText) {
         return res.status(500).json({
           status: "Failed",

@@ -50,7 +50,8 @@ export const getMealPlan = async (req, res) => {
         - protein (dalam gram, misalnya "20g")
         - carbohydrates (dalam gram)
         - fat (dalam gram)
-        Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.`,
+        Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
+        Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`,
       });
 
       const mealPlanText = mealPlanResponse.text;
