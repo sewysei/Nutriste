@@ -60,7 +60,12 @@ export const getMealPlan = async (req, res) => {
       const mealPlanJson = JSON.parse(cleanedText);
       for (let item of mealPlanJson.meal_plan) {
         const imageBase64 = await getImageForFoodBase64(item.food);
-        item.image = imageBase64; // simpan ke properti image
+        if (!imageBase64) {
+          console.log(`Failed to fetch image for ${item.food}`);
+          item.image = null; // jika gambar gagal didapatkan, beri nilai null atau placeholder
+        } else {
+          item.image = imageBase64;
+        }
       }
 
       // Save new meal plan

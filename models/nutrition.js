@@ -9,7 +9,7 @@ const nutritionDataSchema = new Schema(
       required: true,
     },
     response: {
-      type: String,
+      type: Object,
       required: true,
     },
   },
