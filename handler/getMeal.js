@@ -54,13 +54,14 @@ export const getMealPlan = async (req, res) => {
       });
 
       const mealPlanText = mealPlanResponse.text;
+      const mealPlanJson = JSON.parse(mealPlanText);
 
       // Save new meal plan
       await MealPlanModel.updateOne(
         { userId },
         {
           $set: {
-            response: mealPlanText,
+            response: mealPlanJson,
             updatedAt: new Date(),
           },
         },

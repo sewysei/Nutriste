@@ -31,7 +31,7 @@ export const googlePassword = async (req, res) => {
       return res.status(400).json({
         status: "Failed",
         message:
-          "Password harus setidaknya 8 karakter dan mengandung setidaknya satu huruf dan satu angka.",
+          "Password harus setidaknya 8 karakter dan mengandung setidaknya satu huruf dan satu angka. Jangan gunakan spasi untuk password",
       });
     }
 

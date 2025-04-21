@@ -55,6 +55,7 @@ export const getNutritionSuggestion = async (req, res) => {
       });
 
       const nutritionText = nutritionResponse.text;
+      const nutritionJson = JSON.parse(mealPlanText);
       if (!nutritionText) {
         return res.status(500).json({
           status: "Failed",
@@ -66,7 +67,7 @@ export const getNutritionSuggestion = async (req, res) => {
         { userId },
         {
           $set: {
-            response: nutritionText,
+            response: nutritionJson,
             updatedAt: new Date(),
           },
         },
