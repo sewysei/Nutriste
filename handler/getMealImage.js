@@ -2,7 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-const GOOGLE_CX = process.env.GOOGLE_SEARCH_CX;
+const GOOGLE_CX = process.env.GOOGLE_SEARCH_API_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_SEARCH_API_KEY;
 
 export const getImageForFoodBase64 = async (foodName) => {
