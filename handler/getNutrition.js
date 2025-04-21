@@ -56,7 +56,7 @@ export const getNutritionSuggestion = async (req, res) => {
 
       const nutritionText = nutritionResponse.text;
       const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
-      const nutritionJson = JSON.parse(nutritionText);
+      const nutritionJson = JSON.parse(cleanedText);
       if (!nutritionText) {
         return res.status(500).json({
           status: "Failed",
