@@ -55,6 +55,7 @@ export const getMealPlan = async (req, res) => {
       });
 
       const mealPlanText = mealPlanResponse.text;
+      const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
       const mealPlanJson = JSON.parse(mealPlanText);
 
       // Save new meal plan

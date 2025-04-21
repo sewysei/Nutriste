@@ -55,6 +55,7 @@ export const getNutritionSuggestion = async (req, res) => {
       });
 
       const nutritionText = nutritionResponse.text;
+      const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
       const nutritionJson = JSON.parse(nutritionText);
       if (!nutritionText) {
         return res.status(500).json({
