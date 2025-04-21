@@ -80,14 +80,14 @@ export const getMealPlan = async (req, res) => {
         { upsert: true } // this will insert if it doesn't exist
       );
       return res.status(200).json({
-        status: "Failed",
-        message: "Success fetching data",
+        status: "Success",
+        message: "Success updating meal plan",
         suggestion: mealPlanText,
       });
     }
     return res.status(200).json({
-      status: "Failed",
-      message: "Success fetching data",
+      status: "Success",
+      message: "Success fetching meal plan from database",
       suggestion: mealPlanData.response,
     });
   } catch (error) {
