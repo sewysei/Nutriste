@@ -29,28 +29,25 @@ export const getMealImage = async (req, res) => {
 
     const mealItems = mealPlan.response.meal_plan;
 
-    // Buat array hasil dengan gambar
-    const result = [];
-
-    for (const item of mealItems) {
+    for (let item of mealItems) {
       const base64Image = await getImageForFoodBase64(item.food);
-      result.push({
-        meal_time: item.meal_time,
-        food: item.food,
-        image: base64Image || null,
-      });
+      item.image = base64Image || null;
     }
+
+    // Update ke database
+    mealPlan.updatedAt = new Date(); // optionally update timestamp
+    await mealPlan.save();
 
     return res.status(200).json({
       status: "Success",
-      message: "Gambar berhasil diambil dari meal plan",
-      images: result,
+      message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
+      updatedMealPlan: mealPlan.response,
     });
   } catch (error) {
-    console.error("Error fetching meal images:", error.message);
+    console.error("Error saving images to DB:", error.message);
     return res.status(500).json({
       status: "Failed",
-      message: "Terjadi kesalahan saat mengambil gambar.",
+      message: "Terjadi kesalahan saat menyimpan gambar ke database.",
     });
   }
 };
