@@ -34,13 +34,7 @@ export const getImageForFoodBase64 = async (foodName) => {
     // return as data URL
     return `data:${contentType};base64,${base64}`;
   } catch (error) {
-    console.error(
-      "Failed to fetch Base64 image for",
-      foodName,
-      error.message,
-      GOOGLE_CX,
-      GOOGLE_API_KEY
-    );
+    console.error("Failed to fetch Base64 image for", foodName, error.message);
     return null;
   }
 };
