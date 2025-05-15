@@ -156,9 +156,7 @@ export const getMealPlan = async (req, res) => {
       console.log("===> Looping through meal items...");
 
       for (let item of mealPlanJson.meal_plan) {
-        console.log(`Fetching image for: ${item.food}`);
-        const imageBase64 = await getImageForFoodBase64(item.food);
-        item.image = imageBase64 || null;
+        item.image = null;
       }
 
       console.log("===> Saving meal plan to DB");

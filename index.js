@@ -17,6 +17,7 @@ import { addProfile } from "./handler/profile.js";
 import { getProfile } from "./handler/getProfile.js";
 import { getNutritionSuggestion } from "./handler/getNutrition.js";
 import { getMealPlan } from "./handler/getMeal.js";
+import { getMealImage } from "./handler/mealImages.js";
 import { logoutUser } from "./handler/logout.js";
 
 const app = express();
@@ -53,6 +54,8 @@ app.get("/profile", verifyToken, getProfile);
 app.get("/nutrition", verifyToken, getNutritionSuggestion);
 
 app.get("/meal-plan", verifyToken, getMealPlan);
+
+app.get("/meal-plan-images", verifyToken, getMealImage);
 
 app.post("/auth/logout", logoutUser);
 
