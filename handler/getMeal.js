@@ -1,11 +1,11 @@
-// import { MealPlanModel } from "../models/mealPlan.js";
-// import { HealthProfileModel } from "../models/healthData.js"; // Needed to get user data
-// import { GoogleGenAI } from "@google/genai";
-// import { getImageForFoodBase64 } from "./getMealImage.js";
-// import dotenv from "dotenv";
-// dotenv.config();
+import { MealPlanModel } from "../models/mealPlan.js";
+import { HealthProfileModel } from "../models/healthData.js"; // Needed to get user data
+import { GoogleGenAI } from "@google/genai";
+import { getImageForFoodBase64 } from "./getMealImage.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-// const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // export const getMealPlan = async (req, res) => {
 //   try {
