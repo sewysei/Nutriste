@@ -1,4 +1,3 @@
-// controllers/mealImageController.js
 import { getImageForFoodBase64 } from "./getMealImage.js";
 import { MealPlanModel } from "../models/mealPlan.js";
 
@@ -13,7 +12,6 @@ export const getMealImage = async (req, res) => {
       });
     }
 
-    // Ambil meal plan dari DB
     const mealPlan = await MealPlanModel.findOne({ userId });
 
     if (
@@ -31,17 +29,18 @@ export const getMealImage = async (req, res) => {
 
     for (let item of mealItems) {
       const base64Image = await getImageForFoodBase64(item.food);
-      item.image = base64Image;
+      item.image = base64Image || null;
     }
 
-    // Update ke database
-    mealPlan.updatedAt = new Date(); // optionally update timestamp
+    // Penting: beri tahu mongoose kalau field nested diubah
+    mealPlan.updatedAt = new Date();
+    mealPlan.markModified("response"); // 🔥 Fix krusial
     await mealPlan.save();
 
     return res.status(200).json({
       status: "Success",
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
-      updatedMealPlan: mealPlan.response.image,
+      updatedMealPlan: mealPlan.response,
     });
   } catch (error) {
     console.error("Error saving images to DB:", error.message);
