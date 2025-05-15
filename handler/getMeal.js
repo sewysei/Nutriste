@@ -58,15 +58,15 @@ export const getMealPlan = async (req, res) => {
       const mealPlanText = mealPlanResponse.text;
       const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
       const mealPlanJson = JSON.parse(cleanedText);
-      // for (let item of mealPlanJson.meal_plan) {
-      //   const imageBase64 = await getImageForFoodBase64(item.food);
-      //   if (!imageBase64) {
-      //     console.log(`Failed to fetch image for ${item.food}`);
-      //     item.image = null; // jika gambar gagal didapatkan, beri nilai null atau placeholder
-      //   } else {
-      //     item.image = imageBase64;
-      //   }
-      // }
+      for (let item of mealPlanJson.meal_plan) {
+        const imageBase64 = await getImageForFoodBase64(item.food);
+        if (!imageBase64) {
+          console.log(`Failed to fetch image for ${item.food}`);
+          item.image = null; // jika gambar gagal didapatkan, beri nilai null atau placeholder
+        } else {
+          item.image = imageBase64;
+        }
+      }
 
       // Save new meal plan
       await MealPlanModel.updateOne(
