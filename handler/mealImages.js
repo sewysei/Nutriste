@@ -31,7 +31,7 @@ export const getMealImage = async (req, res) => {
 
     for (let item of mealItems) {
       const base64Image = await getImageForFoodBase64(item.food);
-      item.image = base64Image || null;
+      item.image = base64Image;
     }
 
     // Update ke database
@@ -41,7 +41,7 @@ export const getMealImage = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
-      updatedMealPlan: mealPlan.response,
+      updatedMealPlan: mealPlan.response.image,
     });
   } catch (error) {
     console.error("Error saving images to DB:", error.message);
