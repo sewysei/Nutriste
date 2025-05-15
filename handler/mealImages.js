@@ -1,34 +1,56 @@
 // controllers/mealImageController.js
 import { getImageForFoodBase64 } from "./getMealImage.js";
+import { MealPlanModel } from "../models/mealPlan.js";
 
 export const getMealImage = async (req, res) => {
   try {
-    const food = req.query.food;
-    if (!food) {
-      return res.status(400).json({
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
         status: "Failed",
-        message: "Parameter 'food' diperlukan",
+        message: "Akses ditolak. User tidak terautentikasi.",
       });
     }
 
-    const base64Image = await getImageForFoodBase64(food);
-    if (!base64Image) {
+    // Ambil meal plan dari DB
+    const mealPlan = await MealPlanModel.findOne({ userId });
+
+    if (
+      !mealPlan ||
+      !mealPlan.response ||
+      !Array.isArray(mealPlan.response.meal_plan)
+    ) {
       return res.status(404).json({
         status: "Failed",
-        message: `Gambar tidak ditemukan untuk makanan: ${food}`,
+        message: "Data meal plan tidak ditemukan.",
       });
     }
 
-    res.status(200).json({
+    const mealItems = mealPlan.response.meal_plan;
+
+    // Buat array hasil dengan gambar
+    const result = [];
+
+    for (const item of mealItems) {
+      const base64Image = await getImageForFoodBase64(item.food);
+      result.push({
+        meal_time: item.meal_time,
+        food: item.food,
+        image: base64Image || null,
+      });
+    }
+
+    return res.status(200).json({
       status: "Success",
-      food,
-      image: base64Image,
+      message: "Gambar berhasil diambil dari meal plan",
+      images: result,
     });
   } catch (error) {
-    console.error("Error fetching meal image:", error.message);
-    res.status(500).json({
+    console.error("Error fetching meal images:", error.message);
+    return res.status(500).json({
       status: "Failed",
-      message: "Terjadi kesalahan saat mengambil gambar",
+      message: "Terjadi kesalahan saat mengambil gambar.",
     });
   }
 };
