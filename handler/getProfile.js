@@ -23,6 +23,7 @@ export const getProfile = async (req, res) => {
           healthCondition: checkUser.healthCondition,
           purposes: checkUser.purposes,
           photo: checkUser.photo || null,
+          BMI: checkUser.BMI,
         },
       });
     }
