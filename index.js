@@ -48,6 +48,8 @@ app.post("/auth/forgot-password", forgotPassword);
 
 app.post("/auth/reset-password", resetPassword);
 
+app.use("/uploads", express.static("uploads"));
+
 app.post("/profile", verifyToken, upload.single("photo"), addProfile);
 
 app.get("/profile", verifyToken, getProfile);
