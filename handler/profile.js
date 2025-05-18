@@ -21,6 +21,7 @@ export const addProfile = async (req, res) => {
 
   try {
     const userId = req.userId;
+    const BMI = weight / ((height * height) / 10000);
     let photoBase64 = null;
     if (req.file) {
       photoBase64 = `data:${
@@ -63,7 +64,6 @@ export const addProfile = async (req, res) => {
       });
     }
 
-    const addBMI = ((height * height) / 10000) * weight;
     const newHealthProfile = new HealthProfileModel({
       age,
       gender,
@@ -74,7 +74,7 @@ export const addProfile = async (req, res) => {
       purposes,
       userId, // associate it with a user
       photo: photoBase64,
-      BMI: addBMI,
+      BMI: BMI,
     });
 
     const savedProfile = await newHealthProfile.save();
