@@ -5,9 +5,10 @@ export const getProfile = async (req, res) => {
     const userId = req.userId;
     const checkUser = await HealthProfileModel.findOne({ userId });
     if (!checkUser) {
-      res.status(404).json({
+      return res.status(404).json({
         status: "Failed",
-        msg: "Profil Kesehatan tidak ditemukan. Mohon mengisi data di profil terlebih dahulu.",
+        message:
+          "Profil Kesehatan tidak ditemukan. Mohon mengisi data di profil terlebih dahulu.",
       });
     } else {
       res.status(200).json({
@@ -21,6 +22,7 @@ export const getProfile = async (req, res) => {
           activity: checkUser.activity,
           healthCondition: checkUser.healthCondition,
           purposes: checkUser.purposes,
+          photo: checkUser.photo || null,
         },
       });
     }
