@@ -27,6 +27,7 @@ export const addProfile = async (req, res) => {
         req.file.mimetype
       };base64,${req.file.buffer.toString("base64")}`;
     }
+
     const existingProfile = await HealthProfileModel.findOne({ userId });
 
     if (existingProfile) {
@@ -37,6 +38,7 @@ export const addProfile = async (req, res) => {
       existingProfile.activity = activity;
       existingProfile.healthCondition = healthCondition;
       existingProfile.purposes = purposes;
+      existingProfile.BMI = BMI;
 
       if (photoBase64) {
         existingProfile.photo = photoBase64;
@@ -56,10 +58,12 @@ export const addProfile = async (req, res) => {
           health: updatedProfile.healthCondition,
           purposes: updatedProfile.purposes,
           photo: updatedProfile.photo || null,
+          BMI: updatedProfile.BMI,
         },
       });
     }
 
+    const addBMI = ((height * height) / 10000) * weight;
     const newHealthProfile = new HealthProfileModel({
       age,
       gender,
@@ -70,6 +74,7 @@ export const addProfile = async (req, res) => {
       purposes,
       userId, // associate it with a user
       photo: photoBase64,
+      BMI: addBMI,
     });
 
     const savedProfile = await newHealthProfile.save();
@@ -85,6 +90,7 @@ export const addProfile = async (req, res) => {
         health: savedProfile.healthCondition,
         purposes: savedProfile.purposes,
         photo: savedProfile.photo || null,
+        BMI: savedProfile.BMI,
       },
     });
   } catch (err) {
