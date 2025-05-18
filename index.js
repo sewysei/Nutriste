@@ -19,6 +19,8 @@ import { getProfile } from "./handler/getProfile.js";
 import { getNutritionSuggestion } from "./handler/getNutrition.js";
 import { getMealPlan } from "./handler/getMeal.js";
 import { getMealImage } from "./handler/mealImages.js";
+import { chatBot } from "./handler/chatbot.js";
+import { getChatHistory } from "./handler/getChatHistory.js";
 import { logoutUser } from "./handler/logout.js";
 
 const app = express();
@@ -59,6 +61,10 @@ app.get("/nutrition", verifyToken, getNutritionSuggestion);
 app.get("/meal-plan", verifyToken, getMealPlan);
 
 app.get("/meal-plan-images", verifyToken, getMealImage);
+
+app.post("/chat", verifyToken, chatBot);
+
+app.get("/chat", verifyToken, getChatHistory);
 
 app.post("/auth/logout", logoutUser);
 

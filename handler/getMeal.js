@@ -136,17 +136,17 @@ export const getMealPlan = async (req, res) => {
       const mealPlanResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
         contents: `Buat perencanaan makanan untuk seorang ${gender} usia ${age},
-//         tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
-//         Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata.
-//         JSON harus berisi array dengan nama "meal_plan", dan setiap elemen adalah sebuah objek makanan dengan properti:
-//         - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack Sore)
-//         - food (nama makanan atau menu)
-//         - calories (jumlah kalori dalam angka)
-//         - protein (dalam gram, misalnya "20g")
-//         - carbohydrates (dalam gram)
-//         - fat (dalam gram)
-//         Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
-//         Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
+        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
+        Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata.
+        JSON harus berisi array dengan nama "meal_plan", dan setiap elemen adalah sebuah objek makanan dengan properti:
+        - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack Sore)
+        - food (nama makanan atau menu)
+        - calories (jumlah kalori dalam angka)
+        - protein (dalam gram, misalnya "20g")
+        - carbohydrates (dalam gram)
+        - fat (dalam gram)
+        Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
+        Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
       });
 
       const mealPlanText = mealPlanResponse.text;
