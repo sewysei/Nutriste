@@ -1,18 +1,6 @@
 import multer from "multer";
-import path from "path";
 
-// Set storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // simpan di folder uploads/
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + ext); // nama file unik berdasarkan timestamp
-  },
-});
-
-// Filter file (opsional)
+const storage = multer.memoryStorage(); // simpan di memory buffer
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
   if (allowedTypes.includes(file.mimetype)) {
