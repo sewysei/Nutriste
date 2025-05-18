@@ -36,6 +36,7 @@ const healthProfileSchema = new Schema(
       type: String,
       required: true,
     },
+    photo: String,
   },
   {
     timestamps: true,

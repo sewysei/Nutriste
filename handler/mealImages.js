@@ -32,9 +32,8 @@ export const getMealImage = async (req, res) => {
       item.image = base64Image || null;
     }
 
-    // Penting: beri tahu mongoose kalau field nested diubah
     mealPlan.updatedAt = new Date();
-    mealPlan.markModified("response"); // 🔥 Fix krusial
+    mealPlan.markModified("response");
     await mealPlan.save();
 
     return res.status(200).json({

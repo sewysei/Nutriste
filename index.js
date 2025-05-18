@@ -6,6 +6,7 @@ dotenv.config();
 
 import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
+import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/register.js";
 import { googleSignIn } from "./handler/googleRegister.js";
 import { googlePassword } from "./handler/password.js";
@@ -47,7 +48,7 @@ app.post("/auth/forgot-password", forgotPassword);
 
 app.post("/auth/reset-password", resetPassword);
 
-app.post("/profile", verifyToken, addProfile);
+app.post("/profile", verifyToken, upload.single("photo"), addProfile);
 
 app.get("/profile", verifyToken, getProfile);
 

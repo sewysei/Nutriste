@@ -21,6 +21,7 @@ export const addProfile = async (req, res) => {
 
   try {
     const userId = req.userId;
+    const photo = req.file ? req.file.filename : null;
     const existingProfile = await HealthProfileModel.findOne({ userId });
 
     if (existingProfile) {
@@ -31,6 +32,10 @@ export const addProfile = async (req, res) => {
       existingProfile.activity = activity;
       existingProfile.healthCondition = healthCondition;
       existingProfile.purposes = purposes;
+
+      if (photo) {
+        existingProfile.photo = photo;
+      }
 
       const updatedProfile = await existingProfile.save();
 
@@ -45,6 +50,7 @@ export const addProfile = async (req, res) => {
           activity: updatedProfile.activity,
           health: updatedProfile.healthCondition,
           purposes: updatedProfile.purposes,
+          photo: updatedProfile.photo || null,
         },
       });
     }
@@ -58,6 +64,7 @@ export const addProfile = async (req, res) => {
       healthCondition,
       purposes,
       userId, // associate it with a user
+      photo,
     });
 
     const savedProfile = await newHealthProfile.save();
@@ -72,6 +79,7 @@ export const addProfile = async (req, res) => {
         activity: savedProfile.activity,
         health: savedProfile.healthCondition,
         purposes: savedProfile.purposes,
+        photo: savedProfile.photo || null,
       },
     });
   } catch (err) {
