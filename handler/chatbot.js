@@ -1,7 +1,7 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { ChatHistory } from "../models/chatbotHistory.js";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const chatSessions = {};
 
@@ -16,7 +16,7 @@ export const chatBot = async (req, res) => {
 
     // Inisialisasi sesi chat jika belum ada
     if (!chatSessions[userId]) {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
       const chat = model.startChat({ history: [] });
       chatSessions[userId] = chat;
     }
