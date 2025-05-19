@@ -18,11 +18,31 @@ export const chatBot = async (req, res) => {
       chatDoc = new ChatHistory({ userId, messages: [] });
     }
 
+    const systemPrompt = {
+      role: "user",
+      parts: [
+        {
+          text: `Kamu adalah asisten gizi. Jawablah hanya pertanyaan seputar makanan sehat dan rencana makan. 
+          Jika pertanyaan di luar topik, tolak secara sopan. Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah".
+          Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya. Jawaban tidak lebih dari 300 kata.`,
+        },
+      ],
+    };
+
     // Siapkan riwayat untuk dikirim ke Gemini
     const historyForGemini = chatDoc.messages.map((msg) => ({
       role: msg.role === "user" ? "user" : "model",
       parts: [{ text: msg.content }],
     }));
+
+    const contents = [
+      systemPrompt,
+      ...historyForGemini,
+      {
+        role: "user",
+        parts: [{ text: message }],
+      },
+    ];
 
     // Tambahkan pesan baru dari user ke history yang akan dikirim
     historyForGemini.push({
@@ -32,8 +52,8 @@ export const chatBot = async (req, res) => {
 
     // Kirim ke Gemini
     const result = await ai.models.generateContent({
-      model: "gemini-1.5-flash", // atau "gemini-1.5-pro"
-      contents: historyForGemini,
+      model: "gemini-1.5-flash",
+      contents: contents,
     });
 
     const candidates = result?.candidates;
