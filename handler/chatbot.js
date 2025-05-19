@@ -25,7 +25,7 @@ export const chatBot = async (req, res) => {
           text: `Kamu adalah asisten gizi. Jawablah hanya pertanyaan seputar makanan sehat dan rencana makan. 
           Jika pertanyaan di luar topik, tolak secara sopan. Jangan gunakan tanda cetak tebal, bintang, 
           atau frasa pembuka seperti "Tentu" atau "Berikut adalah".
-          Jangan tanda kutip tiga. Jawaban tidak lebih dari 300 kata.`,
+          Jangan tanda kutip tiga. Jawaban tidak lebih dari 300 kata. Jika jawaban dalam bentuk list, berikan penanda.`,
         },
       ],
     };
