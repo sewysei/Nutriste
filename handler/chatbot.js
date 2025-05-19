@@ -36,7 +36,12 @@ export const chatBot = async (req, res) => {
       contents: historyForGemini,
     });
 
-    const reply = result.response.text();
+    const candidates = result?.candidates;
+    const reply = candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!reply) {
+      return res.status(500).json({ error: "Tidak ada respons dari Gemini." });
+    }
 
     // Simpan percakapan ke database
     chatDoc.messages.push({
