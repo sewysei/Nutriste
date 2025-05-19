@@ -3,8 +3,6 @@ import { ChatHistory } from "../models/chatbotHistory.js";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-const chatSessions = {};
-
 export const chatBot = async (req, res) => {
   try {
     const userId = req.userId;
@@ -14,35 +12,33 @@ export const chatBot = async (req, res) => {
       return res.status(400).json({ error: "Message diperlukan." });
     }
 
-    // Ambil riwayat sebelumnya dari MongoDB
+    // Ambil atau buat riwayat dari MongoDB
     let chatDoc = await ChatHistory.findOne({ userId });
     if (!chatDoc) {
       chatDoc = new ChatHistory({ userId, messages: [] });
     }
 
-    // Siapkan history dalam format Gemini
-    const history = chatDoc.messages.map((msg) => ({
+    // Siapkan riwayat untuk dikirim ke Gemini
+    const historyForGemini = chatDoc.messages.map((msg) => ({
       role: msg.role === "user" ? "user" : "model",
       parts: [{ text: msg.content }],
     }));
 
-    // Inisialisasi sesi chat jika belum ada
-    if (!chatSessions[userId]) {
-      const chat = await ai.models.startChat({
-        model: "gemini-1.5-flash",
-        history,
-      });
-      chatSessions[userId] = chat;
-    }
+    // Tambahkan pesan baru dari user ke history yang akan dikirim
+    historyForGemini.push({
+      role: "user",
+      parts: [{ text: message }],
+    });
 
-    const chat = chatSessions[userId];
+    // Kirim ke Gemini
+    const result = await ai.models.generateContent({
+      model: "gemini-1.5-flash", // atau "gemini-1.5-pro"
+      contents: historyForGemini,
+    });
 
-    // Kirim pesan ke Gemini
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const reply = response.text();
+    const reply = result.response.text();
 
-    // Simpan ke MongoDB
+    // Simpan percakapan ke database
     chatDoc.messages.push({
       role: "user",
       content: message,
@@ -54,9 +50,8 @@ export const chatBot = async (req, res) => {
       timestamp: new Date(),
     });
 
-    // Batasi panjang pesan
     if (chatDoc.messages.length > 50) {
-      chatDoc.messages = chatDoc.messages.slice(-50);
+      chatDoc.messages = chatDoc.messages.slice(-50); // simpan maksimal 50 pesan
     }
 
     await chatDoc.save();
