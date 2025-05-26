@@ -30,13 +30,26 @@ export const getNutritionSuggestion = async (req, res) => {
         });
       }
 
-      const { age, gender, height, weight, healthCondition, purposes } =
-        profile;
+      const {
+        age,
+        gender,
+        height,
+        weight,
+        activity,
+        healthCondition,
+        foodRestrictions,
+        activeStatus,
+        mealsPerDay,
+        favouriteFood,
+        purposes,
+      } = profile;
 
       const nutritionResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
         contents: `Buat saran nutrisi untuk seorang ${gender} usia ${age}, 
-        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
+        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}. Memiliki pantangan makan 
+        ${foodRestrictions}. Aktivitas Sehari hari ${activity}, dengan keaktifan ${activeStatus}. Makan ${mealsPerDay} per hari, 
+        dan makanan favorit ${favouriteFood}
         Tuliskan output dalam format JSON saja. Tidak ada penjelasan atau teks di luar JSON.
         Format JSON harus memiliki struktur:
         {

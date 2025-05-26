@@ -1,8 +1,19 @@
 import { HealthProfileModel } from "../models/healthData.js";
 
 export const addProfile = async (req, res) => {
-  const { age, gender, height, weight, activity, healthCondition, purposes } =
-    req.body;
+  const {
+    age,
+    gender,
+    height,
+    weight,
+    activity,
+    healthCondition,
+    foodRestrictions,
+    activeStatus,
+    mealsPerDay,
+    favouriteFood,
+    purposes,
+  } = req.body;
 
   if (
     age === undefined ||
@@ -11,6 +22,10 @@ export const addProfile = async (req, res) => {
     weight === undefined ||
     !activity ||
     !healthCondition ||
+    !foodRestrictions ||
+    !activeStatus ||
+    !mealsPerDay ||
+    !favouriteFood ||
     !purposes
   ) {
     return res.status(400).json({
@@ -22,6 +37,7 @@ export const addProfile = async (req, res) => {
   try {
     const userId = req.userId;
     const BMI = weight / ((height * height) / 10000);
+
     let photoBase64 = null;
     if (req.file) {
       photoBase64 = `data:${
@@ -38,6 +54,10 @@ export const addProfile = async (req, res) => {
       existingProfile.weight = weight;
       existingProfile.activity = activity;
       existingProfile.healthCondition = healthCondition;
+      existingProfile.foodRestrictions = foodRestrictions;
+      existingProfile.activeStatus = activeStatus;
+      existingProfile.mealsPerDay = mealsPerDay;
+      existingProfile.favouriteFood = favouriteFood;
       existingProfile.purposes = purposes;
       existingProfile.BMI = BMI;
 
@@ -50,48 +70,32 @@ export const addProfile = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Profil Kesehatan diperbarui.",
-        data: {
-          age: updatedProfile.age,
-          gender: updatedProfile.gender,
-          height: updatedProfile.height,
-          weight: updatedProfile.weight,
-          activity: updatedProfile.activity,
-          health: updatedProfile.healthCondition,
-          purposes: updatedProfile.purposes,
-          photo: updatedProfile.photo || null,
-          BMI: updatedProfile.BMI,
-        },
+        data: updatedProfile,
       });
     }
 
     const newHealthProfile = new HealthProfileModel({
+      userId,
       age,
       gender,
       height,
       weight,
       activity,
       healthCondition,
+      foodRestrictions,
+      activeStatus,
+      mealsPerDay,
+      favouriteFood,
       purposes,
-      userId, // associate it with a user
       photo: photoBase64,
-      BMI: BMI,
+      BMI,
     });
 
     const savedProfile = await newHealthProfile.save();
     res.status(200).json({
       status: "Success",
       message: "Profil Kesehatan berhasil dibuat.",
-      data: {
-        age: savedProfile.age,
-        gender: savedProfile.gender,
-        height: savedProfile.height,
-        weight: savedProfile.weight,
-        activity: savedProfile.activity,
-        health: savedProfile.healthCondition,
-        purposes: savedProfile.purposes,
-        photo: savedProfile.photo || null,
-        BMI: savedProfile.BMI,
-      },
+      data: savedProfile,
     });
   } catch (err) {
     res.status(400).json({

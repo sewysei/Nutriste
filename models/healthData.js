@@ -8,15 +8,11 @@ const healthProfileSchema = new Schema(
       ref: "User", // or "UserModel" depending on your setup
       required: true,
     },
-    age: {
-      type: Number,
-      required: true,
-    },
     gender: {
       type: String,
       required: true,
     },
-    height: {
+    age: {
       type: Number,
       required: true,
     },
@@ -24,11 +20,31 @@ const healthProfileSchema = new Schema(
       type: Number,
       required: true,
     },
+    height: {
+      type: Number,
+      required: true,
+    },
+    healthCondition: {
+      type: String,
+      required: true,
+    },
+    foodRestrictions: {
+      type: String,
+      required: true,
+    },
     activity: {
       type: String,
       required: true,
     },
-    healthCondition: {
+    activeStatus: {
+      type: String,
+      required: true,
+    },
+    mealsPerDay: {
+      type: String,
+      required: true,
+    },
+    favouriteFood: {
       type: String,
       required: true,
     },
@@ -36,6 +52,7 @@ const healthProfileSchema = new Schema(
       type: String,
       required: true,
     },
+
     photo: String,
     BMI: Number,
   },

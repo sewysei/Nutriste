@@ -14,17 +14,7 @@ export const getProfile = async (req, res) => {
       res.status(200).json({
         status: "Success",
         msg: "Profil Kesehatan ditemukan.",
-        data: {
-          age: checkUser.age,
-          gender: checkUser.gender,
-          height: checkUser.height,
-          weight: checkUser.weight,
-          activity: checkUser.activity,
-          healthCondition: checkUser.healthCondition,
-          purposes: checkUser.purposes,
-          photo: checkUser.photo || null,
-          BMI: checkUser.BMI,
-        },
+        data: checkUser,
       });
     }
   } catch (err) {
