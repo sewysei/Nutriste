@@ -10,11 +10,6 @@ export const verifyOTP = async (req, res) => {
 
   try {
     const checkUser = await UserModel.findOne({ otp });
-    if (checkUser.otpVerified) {
-      return res
-        .status(400)
-        .json({ status: "Failed", message: "OTP sudah terverifikasi" });
-    }
 
     if (!checkUser || checkUser.otp !== otp) {
       return res
