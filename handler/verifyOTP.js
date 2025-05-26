@@ -1,7 +1,7 @@
 import { UserModel } from "../models/users.js";
 
 export const verifyOTP = async (req, res) => {
-  const { otp } = req.body.otp?.toString();
+  const otp = req.body.otp?.toString();
   if (!otp) {
     return res
       .status(400)
