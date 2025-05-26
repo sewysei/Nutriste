@@ -1,6 +1,5 @@
-import { UserModel } from "../models/users.js";
+import { UserModel } from "../../models/users.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
@@ -76,9 +75,11 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new UserModel({ username, email, password: hashedPassword });
     const savedUser = await user.save();
-    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "6h",
-    });
+
+    const otp = Math.floor(10000 + Math.random() * 90000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    await savedUser.updateOne({ $set: { otp, otpExpires } });
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -88,13 +89,12 @@ export const registerUser = async (req, res) => {
       },
     });
 
-    const verificationLink = `https://nutriste.vercel.app/verify-email?token=${token}`;
     await transporter.sendMail({
       from: process.env.AUTH_EMAIL,
       to: email,
-      subject: "Email Verifikasi",
-      html: `<p>Klik link ini untuk verifikasi email: <a href="${verificationLink}">${verificationLink}</a></p>
-             <p>Link akan kadaluarsa dalam 6 jam.</p>`,
+      subject: "Verifikasi Email",
+      html: `<p>Kode OTP Anda adalah: ${otp}</p>
+             <p>Kode akan kadaluarsa dalam 10 menit.</p>`,
     });
 
     res.status(200).json({

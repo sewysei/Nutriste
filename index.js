@@ -8,22 +8,22 @@ import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
 import { verifyOtpCookie } from "./verifyOTP.js";
 import { upload } from "./uploadFile.js";
-import { registerUser } from "./handler/register.js";
-import { googleSignIn } from "./handler/googleRegister.js";
-import { googlePassword } from "./handler/password.js";
-import { verifyEmail } from "./handler/verifyEmail.js";
-import { loginUser } from "./handler/login.js";
-import { forgotPassword } from "./handler/forgotPass.js";
-import { resetPassword } from "./handler/resetPass.js";
-import { addProfile } from "./handler/profile.js";
-import { getProfile } from "./handler/getProfile.js";
-import { getNutritionSuggestion } from "./handler/getNutrition.js";
-import { getMealPlan } from "./handler/getMeal.js";
-import { getMealImage } from "./handler/mealImages.js";
-import { chatBot } from "./handler/chatbot.js";
-import { getChatHistory } from "./handler/getChatHistory.js";
-import { logoutUser } from "./handler/logout.js";
-import { verifyOTP } from "./handler/verifyOTP.js";
+import { registerUser } from "./handler/AUTH/register.js";
+import { googleSignIn } from "./handler/AUTH/googleRegister.js";
+import { googlePassword } from "./handler/AUTH/password.js";
+import { verifyEmail } from "./handler/AUTH/verifyEmail.js";
+import { loginUser } from "./handler/AUTH/login.js";
+import { forgotPassword } from "./handler/AUTH/forgotPass.js";
+import { resetPassword } from "./handler/AUTH/resetPass.js";
+import { addProfile } from "./handler/NUTRITION/profile.js";
+import { getProfile } from "./handler/NUTRITION/getProfile.js";
+import { getNutritionSuggestion } from "./handler/NUTRITION/getNutrition.js";
+import { getMealPlan } from "./handler/NUTRITION/getMeal.js";
+import { getMealImage } from "./handler/NUTRITION/mealImages.js";
+import { chatBot } from "./handler/CHATBOT/chatbot.js";
+import { getChatHistory } from "./handler//CHATBOT/getChatHistory.js";
+import { logoutUser } from "./handler/AUTH/logout.js";
+import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 
 const app = express();
 app.use(express.json());
@@ -42,7 +42,7 @@ app.post("/auth/register", registerUser);
 
 app.post("/auth/google", googleSignIn);
 
-app.post("/auth/password", verifyToken, googlePassword);
+app.post("/auth/password", verifyToken, googlePassword); // Fix googlePassword handler
 
 app.get("/auth/verify-email", verifyEmail);
 

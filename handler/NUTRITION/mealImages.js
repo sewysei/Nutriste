@@ -1,5 +1,5 @@
 import { getImageForFoodBase64 } from "./getMealImage.js";
-import { MealPlanModel } from "../models/mealPlan.js";
+import { MealPlanModel } from "../../models/mealPlan.js";
 
 export const getMealImage = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-import { UserModel } from "../models/users.js";
+import { UserModel } from "../../models/users.js";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
@@ -49,8 +49,8 @@ export const forgotPassword = async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: email,
       subject: "Reset Password OTP Code",
-      html: `<p>Kode OTP mu:</p>
-             <p>${otp}</p>`,
+      html: `<p>Kode OTP Anda adalah: ${otp}</p>
+             <p>Kode akan kadaluarsa dalam 10 menit.</p>`,
     });
 
     const otpCookie = jwt.sign({ otp }, process.env.JWT_SECRET, {

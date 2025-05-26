@@ -1,4 +1,4 @@
-import { UserModel } from "../models/users.js";
+import { UserModel } from "../../models/users.js";
 import { sendVerificationEmail } from "./sendMail.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";

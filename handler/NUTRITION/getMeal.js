@@ -1,5 +1,5 @@
-import { MealPlanModel } from "../models/mealPlan.js";
-import { HealthProfileModel } from "../models/healthData.js"; // Needed to get user data
+import { MealPlanModel } from "../../models/mealPlan.js";
+import { HealthProfileModel } from "../../models/healthData.js"; // Needed to get user data
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 dotenv.config();

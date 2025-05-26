@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { ChatHistory } from "../models/chatbotHistory.js";
+import { ChatHistory } from "../../models/chatbotHistory.js";
 import dotenv from "dotenv";
 dotenv.config();
 

@@ -1,7 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { UserModel } from "../models/users.js";
+import { UserModel } from "../../models/users.js";
 dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);

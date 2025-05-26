@@ -1,4 +1,4 @@
-import { ChatHistory } from "../models/chatbotHistory.js"; // sesuaikan path
+import { ChatHistory } from "../../models/chatbotHistory.js"; // sesuaikan path
 
 export const getChatHistory = async (req, res) => {
   try {
