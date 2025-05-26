@@ -1,7 +1,7 @@
 import { UserModel } from "../models/users.js";
 
 export const verifyOTP = async (req, res) => {
-  const { otp } = req.body;
+  const { otp } = req.body.otp?.toString();
   if (!otp) {
     return res
       .status(400)
@@ -14,7 +14,7 @@ export const verifyOTP = async (req, res) => {
     if (!checkUser || checkUser.otp !== otp) {
       return res
         .status(400)
-        .json({ status: "Failed", message: `OTP Invalid!${otp} ${checkUser}` });
+        .json({ status: "Failed", message: `OTP Invalid!` });
     }
 
     if (checkUser.otpExpires < new Date()) {

@@ -16,6 +16,9 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    otp: String,
+    otpExpires: Date,
+    otpVerified: Boolean,
   },
   {
     timestamps: true,
