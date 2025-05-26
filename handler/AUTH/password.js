@@ -1,5 +1,5 @@
 import { UserModel } from "../../models/users.js";
-import { sendVerificationEmail } from "./sendMail.js";
+// import { sendVerificationEmail } from "./sendMail.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -49,7 +49,7 @@ export const googlePassword = async (req, res) => {
       expiresIn: "6h",
     });
 
-    await sendVerificationEmail(user.email, verifyToken);
+    // await sendVerificationEmail(user.email, verifyToken);
 
     await user.save();
 
