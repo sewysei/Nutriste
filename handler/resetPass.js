@@ -81,14 +81,14 @@ export const resetPassword = async (req, res) => {
       sameSite: "Strict",
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "Success",
-      msg: "Reset password berhasil.",
+      message: "Reset password berhasil.",
     });
   } catch (err) {
     res.status(400).json({
       status: "Failed",
-      msg: "Token tidak valid atau kadaluarsa.",
+      message: "Token tidak valid atau kadaluarsa.",
     });
   }
 };
