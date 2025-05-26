@@ -14,7 +14,7 @@ export const verifyOTP = async (req, res) => {
     if (!checkUser || checkUser.otp !== otp) {
       return res
         .status(400)
-        .json({ status: "Failed", message: "OTP Invalid!" });
+        .json({ status: "Failed", message: `OTP Invalid!${otp} ${checkUser}` });
     }
 
     if (checkUser.otpExpires < new Date()) {
