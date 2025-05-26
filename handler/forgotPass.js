@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users.js";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
@@ -32,14 +31,12 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    const resetToken = jwt.sign(
-      { userId: checkUser._id },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "6h",
-      }
-    );
-    const resetLink = `https://nutriste.vercel.app/reset-password?token=${resetToken}`;
+    const otp = Math.floor(10000 + Math.random() * 90000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    const otpVerified = false;
+
+    await checkUser.updateOne({ $set: { otp, otpExpires, otpVerified } });
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -50,15 +47,25 @@ export const forgotPassword = async (req, res) => {
     await transporter.sendMail({
       from: process.env.AUTH_EMAIL,
       to: email,
-      subject: "Reset Password",
-      html: `<p>Klik link ini untuk reset password:
-             <a href="${resetLink}">${resetLink}</a></p>
-             <p>Link akan kadaluarsa dalam 6 jam.</p>`,
+      subject: "Reset Password OTP Code",
+      html: `<p>Kode OTP mu:</p>
+             <p>${otp}</p>`,
     });
-    res.status(200).json({
+
+    const otpCookie = jwt.sign({ otp }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+
+    res.cookie("otp", otpCookie, {
+      httpOnly: true,
+      secure: true, // use HTTPS in production
+      sameSite: "Strict", // prevent CSRF
+      maxAge: 10 * 60 * 1000, // 7 days
+    });
+
+    return res.status(200).json({
       status: "Success",
-      message:
-        "Email untuk me-reset password terkirim. Cek email Anda untuk reset password. ",
+      message: "Kode OTP untuk me-reset password terkirim. Cek email Anda.",
     });
   } catch (err) {
     res.status(500).json({

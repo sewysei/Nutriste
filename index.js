@@ -6,6 +6,7 @@ dotenv.config();
 
 import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
+import { verifyOtpCookie } from "./verifyOTP.js";
 import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/register.js";
 import { googleSignIn } from "./handler/googleRegister.js";
@@ -22,6 +23,7 @@ import { getMealImage } from "./handler/mealImages.js";
 import { chatBot } from "./handler/chatbot.js";
 import { getChatHistory } from "./handler/getChatHistory.js";
 import { logoutUser } from "./handler/logout.js";
+import { verifyOTP } from "./handler/verifyOTP.js";
 
 const app = express();
 app.use(express.json());
@@ -48,7 +50,9 @@ app.post("/auth/login", loginUser);
 
 app.post("/auth/forgot-password", forgotPassword);
 
-app.post("/auth/reset-password", resetPassword);
+app.post("/auth/verifyOTP", verifyOTP);
+
+app.post("/auth/reset-password", verifyOtpCookie, resetPassword);
 
 app.use("/uploads", express.static("uploads"));
 

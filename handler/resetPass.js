@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { UserModel } from "../models/users.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -6,18 +5,32 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const resetPassword = async (req, res) => {
-  const { token } = req.query;
-  const { newPassword } = req.body;
+  const checkOtp = req.userOTP;
+  const { newPassword, confirmPassword } = req.body;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
-  if (!newPassword) {
-    return res.status(400).json({
+  if (!checkOtp) {
+    return res.status(401).json({
       status: "Failed",
-      msg: "Password baru tidak boleh kosong.",
+      message: "Akses ditolak.",
     });
   }
 
-  if (!passwordRegex.test(password)) {
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Password baru tidak boleh kosong.",
+    });
+  }
+
+  if (newPassword != confirmPassword) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Password tidak cocok",
+    });
+  }
+
+  if (!passwordRegex.test(newPassword)) {
     return res.status(400).json({
       status: "Failed",
       message:
@@ -26,18 +39,39 @@ export const resetPassword = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const checkUser = await UserModel.findById(decoded.userId);
+    const checkUser = await UserModel.findOne({ otp: checkOtp });
 
     if (!checkUser) {
       return res.status(404).json({
         status: "Failed",
-        msg: "Pengguna tidak ditemukan.",
+        message: "User tidak ditemukan.",
+      });
+    }
+
+    if (!checkUser.otpVerified) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Verifikasi OTP terlebih dahulu!",
       });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    if (checkUser.password === hashedPassword) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Password baru tidak boleh sama dengan password lama.",
+      });
+    }
+
     checkUser.password = hashedPassword;
+    await checkUser.updateOne({
+      $unset: {
+        otpVerified: "",
+        otp: "",
+        otpExpires: "",
+      },
+    });
     await checkUser.save();
 
     res.status(200).json({
