@@ -74,6 +74,12 @@ export const resetPassword = async (req, res) => {
     });
     await checkUser.save();
 
+    res.clearCookie("otp", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
     res.status(200).json({
       status: "Success",
       msg: "Reset password berhasil.",
