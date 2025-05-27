@@ -11,6 +11,9 @@ export const getChatHistory = async (req, res) => {
 
     res.status(200).json({ messages: history.messages });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      status: "Failed",
+      message: `Catch error ${err.message}`,
+    });
   }
 };

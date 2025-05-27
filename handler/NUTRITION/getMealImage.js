@@ -5,7 +5,7 @@ dotenv.config();
 const GOOGLE_CX = process.env.GOOGLE_SEARCH_API_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_SEARCH_API_KEY;
 
-export const getImageForFoodBase64 = async (foodName) => {
+export const getImageForFoodBase64 = async (req, res, foodName) => {
   try {
     if (!GOOGLE_API_KEY || !GOOGLE_CX) {
       console.error("Missing Google API Key or Search Engine CX ID");
@@ -45,15 +45,10 @@ export const getImageForFoodBase64 = async (foodName) => {
     const base64 = Buffer.from(imgRes.data, "binary").toString("base64");
 
     return `data:${contentType};base64,${base64}`;
-  } catch (error) {
-    console.error("Failed to fetch Base64 image for", foodName);
-    if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Headers:", error.response.headers);
-      console.error("Data:", error.response.data);
-    } else {
-      console.error("Error Message:", error.message);
-    }
-    return null;
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: `Catch error ${err.message}`,
+    });
   }
 };

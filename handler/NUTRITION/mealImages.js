@@ -41,11 +41,10 @@ export const getMealImage = async (req, res) => {
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
       updatedMealPlan: mealPlan.response,
     });
-  } catch (error) {
-    console.error("Error saving images to DB:", error.message);
+  } catch (err) {
     return res.status(500).json({
       status: "Failed",
-      message: "Terjadi kesalahan saat menyimpan gambar ke database.",
+      message: `Catch error ${err.message}`,
     });
   }
 };

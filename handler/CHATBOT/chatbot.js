@@ -86,7 +86,9 @@ export const chatBot = async (req, res) => {
 
     res.status(200).json({ reply });
   } catch (err) {
-    console.error("Chat error:", err.message);
-    res.status(500).json({ error: "Gagal memproses percakapan." });
+    res.status(500).json({
+      status: "Failed",
+      message: `Catch error ${err.message}`,
+    });
   }
 };

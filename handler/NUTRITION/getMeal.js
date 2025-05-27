@@ -92,10 +92,9 @@ export const getMealPlan = async (req, res) => {
       suggestion: mealPlanData.response,
     });
   } catch (error) {
-    console.error("Error in getMealPlan:", error);
     res.status(500).json({
       status: "Failed",
-      message: "Failed to fetch suggestion",
+      message: `Catch error ${err.message}`,
     });
   }
 };

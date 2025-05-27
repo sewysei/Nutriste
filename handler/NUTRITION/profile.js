@@ -98,9 +98,9 @@ export const addProfile = async (req, res) => {
       data: savedProfile,
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       status: "Failed",
-      message: err.message,
+      message: `Catch error ${err.message}`,
     });
   }
 };
