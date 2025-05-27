@@ -97,9 +97,9 @@ export const registerUser = async (req, res) => {
       subject: "Verifikasi Email",
       html: `
     <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #dddddd; border-radius: 5px;">
-      <h2 style="text-align: center; color: #2c3e50;">Reset Password Anda</h2>
+      <h2 style="text-align: center; color: #2c3e50;">Verifikasi Email Anda</h2>
       <p>Halo,</p>
-      <p>Kami menerima permintaan untuk mereset password akun Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
+      <p>Kami menerima permintaan untuk verifikasi email akun Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
       <p style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
         <a href="${verificationLink}"
            target="_blank"
@@ -116,7 +116,7 @@ export const registerUser = async (req, res) => {
         </a>
       </p>
       <p>Link ini akan kadaluarsa dalam 6 jam.</p>
-      <p>Jika Anda tidak meminta reset password, atau ini adalah kesalahan, silakan abaikan email ini. Akun Anda tetap aman.</p>
+      <p>Jika Anda tidak meminta verifikasi email, atau ini adalah kesalahan, silakan abaikan email ini. Akun Anda tetap aman.</p>
       <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
       <p style="font-size: 12px; color: #777777; text-align: center;">
         Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.
