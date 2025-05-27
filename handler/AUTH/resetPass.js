@@ -86,9 +86,9 @@ export const resetPassword = async (req, res) => {
       message: "Reset password berhasil.",
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       status: "Failed",
-      message: "Token tidak valid atau kadaluarsa.",
+      message: `Catch error ${err.message}`,
     });
   }
 };

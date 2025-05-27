@@ -70,10 +70,10 @@ export const googleSignIn = async (req, res) => {
         token: jwtToken,
       },
     });
-  } catch (error) {
-    res.status(401).json({
+  } catch (err) {
+    res.status(500).json({
       status: "Failed",
-      message: error.message,
+      message: `Catch error ${err.message}`,
     });
   }
 };

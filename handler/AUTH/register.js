@@ -2,6 +2,7 @@ import { UserModel } from "../../models/users.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const registerUser = async (req, res) => {
@@ -76,10 +77,11 @@ export const registerUser = async (req, res) => {
     const user = new UserModel({ username, email, password: hashedPassword });
     const savedUser = await user.save();
 
-    const otp = Math.floor(10000 + Math.random() * 90000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "6h",
+    });
 
-    await savedUser.updateOne({ $set: { otp, otpExpires } });
+    const verificationLink = `https://nutriste.vercel.app/verify-email?token=${token}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -93,8 +95,34 @@ export const registerUser = async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: email,
       subject: "Verifikasi Email",
-      html: `<p>Kode OTP Anda adalah: ${otp}</p>
-             <p>Kode akan kadaluarsa dalam 10 menit.</p>`,
+      html: `
+    <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #dddddd; border-radius: 5px;">
+      <h2 style="text-align: center; color: #2c3e50;">Reset Password Anda</h2>
+      <p>Halo,</p>
+      <p>Kami menerima permintaan untuk mereset password akun Anda. Klik tombol di bawah ini untuk melanjutkan:</p>
+      <p style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
+        <a href="${verificationLink}"
+           target="_blank"
+           style="background-color: #007bff; /* Warna latar tombol */
+                  color: #ffffff; /* Warna teks tombol */
+                  padding: 12px 25px; /* Padding di dalam tombol */
+                  text-decoration: none; /* Hilangkan garis bawah link */
+                  border-radius: 5px; /* Sudut tombol membulat */
+                  font-weight: bold;
+                  display: inline-block; /* Penting agar padding bekerja */
+                  border: 1px solid #0056b3; /* Optional: border untuk efek 3D */
+                  font-size: 16px;">
+          Reset Password
+        </a>
+      </p>
+      <p>Link ini akan kadaluarsa dalam 6 jam.</p>
+      <p>Jika Anda tidak meminta reset password, atau ini adalah kesalahan, silakan abaikan email ini. Akun Anda tetap aman.</p>
+      <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
+      <p style="font-size: 12px; color: #777777; text-align: center;">
+        Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.
+      </p>
+    </div>
+  `,
     });
 
     res.status(200).json({
@@ -110,7 +138,7 @@ export const registerUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: "Failed",
-      message: err.message,
+      message: `Catch error ${err.message}`,
     });
   }
 };

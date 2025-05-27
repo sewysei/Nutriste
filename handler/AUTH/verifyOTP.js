@@ -28,10 +28,10 @@ export const verifyOTP = async (req, res) => {
     return res
       .status(200)
       .json({ status: "Success", message: "Verifikasi OTP berhasil!" });
-  } catch (error) {
-    console.error("Error resetting password:", error);
-    return res
-      .status(500)
-      .json({ status: "Failed", message: "Internal server error" });
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: `Catch error ${err.message}`,
+    });
   }
 };

@@ -39,9 +39,9 @@ export const verifyEmail = async (req, res) => {
       message: "Berhasil memverifikasi email!",
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(500).json({
       status: "Failed",
-      message: `Token Invalid atau ${err.message}`,
+      message: `Catch error ${err.message}`,
     });
   }
 };
