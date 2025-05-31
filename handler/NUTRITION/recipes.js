@@ -29,9 +29,9 @@ export const getRecipes = async (req, res) => {
           contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${foodsList}
           Tulis hasil dalam format JSON.
           JSON harus berisi array dengan nama "foods", dan setiap elemen adalah sebuah objek resep dengan properti:
-          - bahan (dalam bentuk objek yang membagi bahan agar terlist)
-          - food (nama makanan atau menu)
-          - cara pembuatan (dalam bentuk objek yang membagi setiap step pembuatan agar terlist)
+          - ingredients (dalam bentuk array yang membagi bahan agar terlist)
+          - food_name (nama makanan atau menu)
+          - step_by_step (dalam bentuk array yang membagi setiap step pembuatan agar terlist)
           Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
           Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
         });
@@ -68,9 +68,9 @@ export const getRecipes = async (req, res) => {
         contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${foodsList}
         Tulis hasil dalam format JSON.
         JSON harus berisi array dengan nama "foods", dan setiap elemen adalah sebuah objek resep dengan properti:
-        - bahan (dalam bentuk objek yang membagi bahan agar terlist)
-        - food (nama makanan atau menu)
-        - cara pembuatan (dalam bentuk objek yang membagi setiap step pembuatan agar terlist)
+        - ingredients (dalam bentuk array yang membagi bahan agar terlist)
+        - food_name (nama makanan atau menu)
+        - step_by_step (dalam bentuk array yang membagi setiap step pembuatan agar terlist)
         Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
         Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
       });
