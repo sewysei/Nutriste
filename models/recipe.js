@@ -9,7 +9,7 @@ const mealRecipeSchema = new Schema(
       unique: true,
     },
     recipes: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },
