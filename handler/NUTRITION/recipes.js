@@ -1,5 +1,5 @@
-import { mealRecipeModel } from "../../models/recipe";
-import { MealPlanModel } from "../../models/mealPlan";
+import { mealRecipeModel } from "../../models/recipe.js";
+import { MealPlanModel } from "../../models/mealPlan.js";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 dotenv.config();
