@@ -18,12 +18,15 @@ export const getRecipes = async (req, res) => {
     }
     const recipeId = checkMealPlan.recipeId;
     let checkMealRecipe = await mealRecipeModel.findOne({ recipeId });
+    const foodsList = checkMealPlan.response.meal_plan
+      .map((item) => item.food)
+      .join(", ");
 
     if (checkMealRecipe) {
       if (checkMealRecipe.updatedAt < checkMealPlan.updatedAt) {
         const updateMealRecipe = await ai.models.generateContent({
           model: "gemini-2.0-flash",
-          contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${checkMealPlan.response}
+          contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${foodsList}
           Tulis hasil dalam format JSON.
           JSON harus berisi array dengan nama "foods", dan setiap elemen adalah sebuah objek resep dengan properti:
           - bahan (dalam bentuk objek yang membagi bahan agar terlist)
@@ -62,9 +65,7 @@ export const getRecipes = async (req, res) => {
     } else {
       const updateMealRecipe = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${JSON.stringify(
-          checkMealPlan.response
-        )}
+        contents: `Berikan saya resep makanan dari setiap makanan yang ada di ${foodsList}
         Tulis hasil dalam format JSON.
         JSON harus berisi array dengan nama "foods", dan setiap elemen adalah sebuah objek resep dengan properti:
         - bahan (dalam bentuk objek yang membagi bahan agar terlist)
