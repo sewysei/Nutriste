@@ -5,7 +5,7 @@ dotenv.config();
 const GOOGLE_CX = process.env.GOOGLE_SEARCH_API_ID;
 const GOOGLE_API_KEY = process.env.GOOGLE_SEARCH_API_KEY;
 
-export const getImageForFoodBase64 = async (req, res, foodName) => {
+export const getImageForFoodBase64 = async (foodName) => {
   try {
     if (!GOOGLE_API_KEY || !GOOGLE_CX) {
       console.error("Missing Google API Key or Search Engine CX ID");
@@ -46,9 +46,9 @@ export const getImageForFoodBase64 = async (req, res, foodName) => {
 
     return `data:${contentType};base64,${base64}`;
   } catch (err) {
-    return res.status(500).json({
-      status: "Failed",
-      message: `Catch error ${err.message}`,
-    });
+    console.error(
+      `Error while fetching image for "${foodName}": ${err.message}`
+    );
+    throw err;
   }
 };
