@@ -1,7 +1,7 @@
 import { mealRecipeModel } from "../../models/recipe.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
 import { GoogleGenAI } from "@google/genai";
-import dotenv from "dotenv";
+import dotenv, { parse } from "dotenv";
 dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -38,7 +38,8 @@ export const getRecipes = async (req, res) => {
 
         const mealRecipeText = updateMealRecipe.text;
         const cleanedText = mealRecipeText.replace(/```json|```/g, "").trim();
-        const mealRecipeJSON = JSON.parse(cleanedText);
+        const parsed = JSON.parse(cleanedText);
+        const mealRecipeJSON = parsed.food;
 
         await mealRecipeModel.updateOne(
           { recipeId },
@@ -77,7 +78,8 @@ export const getRecipes = async (req, res) => {
 
       const mealRecipeText = updateMealRecipe.text;
       const cleanedText = mealRecipeText.replace(/```json|```/g, "").trim();
-      const mealRecipeJSON = JSON.parse(cleanedText);
+      const parsed = JSON.parse(cleanedText);
+      const mealRecipeJSON = parsed.food;
 
       await mealRecipeModel.updateOne(
         { recipeId },
