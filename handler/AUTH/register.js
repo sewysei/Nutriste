@@ -116,7 +116,7 @@ export const registerUser = async (req, res) => {
         </a>
       </p>
       <p>Link ini akan kadaluarsa dalam 6 jam.</p>
-      <p>Jika Anda tidak meminta verifikasi email, atau ini adalah kesalahan, silakan abaikan email ini. Akun Anda tetap aman.</p>
+      <p>Jika Anda tidak meminta verifikasi email, atau ini adalah kesalahan, silahkan abaikan email ini. Akun Anda tetap aman.</p>
       <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
       <p style="font-size: 12px; color: #777777; text-align: center;">
         Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.

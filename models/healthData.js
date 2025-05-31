@@ -52,7 +52,6 @@ const healthProfileSchema = new Schema(
       type: String,
       required: true,
     },
-
     photo: String,
     BMI: Number,
   },

@@ -2,6 +2,7 @@ import { MealPlanModel } from "../../models/mealPlan.js";
 import { HealthProfileModel } from "../../models/healthData.js"; // Needed to get user data
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import { nanoid } from "nanoid";
 dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -68,12 +69,15 @@ export const getMealPlan = async (req, res) => {
 
       console.log("===> Saving meal plan to DB");
 
+      const existingRecipeId = mealPlanData?.recipeId || nanoid(10);
+
       await MealPlanModel.updateOne(
         { userId },
         {
           $set: {
             response: mealPlanJson,
             updatedAt: new Date(),
+            recipeId: existingRecipeId,
           },
         },
         { upsert: true }
@@ -91,7 +95,7 @@ export const getMealPlan = async (req, res) => {
       message: "Success fetching meal plan from database",
       suggestion: mealPlanData.response,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       status: "Failed",
       message: `Catch error ${err.message}`,

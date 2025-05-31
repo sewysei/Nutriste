@@ -20,6 +20,7 @@ import { getProfile } from "./handler/NUTRITION/getProfile.js";
 import { getNutritionSuggestion } from "./handler/NUTRITION/getNutrition.js";
 import { getMealPlan } from "./handler/NUTRITION/getMeal.js";
 import { getMealImage } from "./handler/NUTRITION/mealImages.js";
+import { getRecipes } from "./handler/NUTRITION/recipes.js";
 import { chatBot } from "./handler/CHATBOT/chatbot.js";
 import { getChatHistory } from "./handler//CHATBOT/getChatHistory.js";
 import { logoutUser } from "./handler/AUTH/logout.js";
@@ -65,6 +66,8 @@ app.get("/nutrition", verifyToken, getNutritionSuggestion);
 app.get("/meal-plan", verifyToken, getMealPlan);
 
 app.get("/meal-plan-images", verifyToken, getMealImage);
+
+app.get("/recipes", verifyToken, getRecipes);
 
 app.post("/chat", verifyToken, chatBot);
 
