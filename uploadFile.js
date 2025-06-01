@@ -1,6 +1,12 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
+// Buat folder uploads/ jika belum ada
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 // Set lokasi dan nama file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
