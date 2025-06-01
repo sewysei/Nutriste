@@ -112,7 +112,7 @@ export const registerUser = async (req, res) => {
                   display: inline-block; /* Penting agar padding bekerja */
                   border: 1px solid #0056b3; /* Optional: border untuk efek 3D */
                   font-size: 16px;">
-          Reset Password
+          Verify Email
         </a>
       </p>
       <p>Link ini akan kadaluarsa dalam 6 jam.</p>

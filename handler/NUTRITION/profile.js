@@ -38,11 +38,11 @@ export const addProfile = async (req, res) => {
     const userId = req.userId;
     const BMI = weight / ((height * height) / 10000);
 
-    let photoBase64 = null;
+    let photoUrl = null;
     if (req.file) {
-      photoBase64 = `data:${
-        req.file.mimetype
-      };base64,${req.file.buffer.toString("base64")}`;
+      photoUrl = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
     }
 
     const existingProfile = await HealthProfileModel.findOne({ userId });
@@ -61,8 +61,8 @@ export const addProfile = async (req, res) => {
       existingProfile.purposes = purposes;
       existingProfile.BMI = BMI;
 
-      if (photoBase64) {
-        existingProfile.photo = photoBase64;
+      if (photoUrl) {
+        existingProfile.photo = photoUrl;
       }
 
       const updatedProfile = await existingProfile.save();
@@ -87,7 +87,7 @@ export const addProfile = async (req, res) => {
       mealsPerDay,
       favouriteFood,
       purposes,
-      photo: photoBase64,
+      photo: photoUrl,
       BMI,
     });
 
