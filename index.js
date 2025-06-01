@@ -55,8 +55,6 @@ app.post("/auth/verifyOTP", verifyOTP);
 
 app.post("/auth/reset-password", verifyOtpCookie, resetPassword);
 
-app.use("/uploads", express.static("uploads"));
-
 app.post("/profile", verifyToken, upload.single("photo"), addProfile);
 
 app.get("/profile", verifyToken, getProfile);

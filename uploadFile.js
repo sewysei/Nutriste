@@ -1,5 +1,4 @@
 import multer from "multer";
-import path from "path";
 import fs from "fs";
 
 // Buat folder uploads/ jika belum ada
@@ -8,41 +7,17 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 // Set lokasi dan nama file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
-});
-
-// Filter file yang diizinkan
-const fileFilter = function (req, file, cb) {
-  const allowedTypes = /jpeg|jpg|png/;
-  const extname = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-  const mimetype = allowedTypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb(
-      new Error("Hanya file gambar .jpeg, .jpg, dan .png yang diperbolehkan.")
-    );
-  }
-};
-
-// Batasi ukuran file (opsional)
-const limits = {
-  fileSize: 5 * 1024 * 1024, // 5 MB
-};
+const storage = multer.memoryStorage();
 
 // Middleware multer siap digunakan
 export const upload = multer({
   storage,
-  fileFilter,
-  limits,
+  limits: { fileSize: 5 * 1024 * 1024 }, // max 5MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Only JPEG, JPG, and PNG files are allowed"), false);
+    }
+    cb(null, true);
+  },
 });
