@@ -20,6 +20,7 @@ const authorizationUrl = client.generateAuthUrl({
   access_type: "offline",
   scope: scopes,
   include_granted_scopes: true,
+  prompt: "consent", // pastikan refresh_token diberikan
 });
 
 export const googleSignIn = (req, res) => {
@@ -36,63 +37,83 @@ export const googleCallbackLogin = async (req, res) => {
     });
   }
 
-  const { tokens } = await client.getToken(code.toString());
+  try {
+    const { tokens } = await client.getToken(code);
 
-  if (!tokens.access_token) {
-    return res.status(400).json({
+    if (!tokens || !tokens.access_token) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Gagal mendapatkan access token dari Google",
+      });
+    }
+
+    client.setCredentials(tokens);
+
+    const oauth2 = google.oauth2({
+      auth: client,
+      version: "v2",
+    });
+
+    const { data } = await oauth2.userinfo.get();
+
+    if (!data.email || !data.name) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Data pengguna dari Google tidak lengkap",
+        data,
+      });
+    }
+
+    let user = await UserModel.findOne({ email: data.email });
+
+    if (!user) {
+      // Pastikan username unik
+      const baseUsername = data.name.replace(/\s+/g, "_").toLowerCase();
+      let username = baseUsername;
+      let count = 1;
+
+      while (await UserModel.findOne({ username })) {
+        username = `${baseUsername}${count++}`;
+      }
+
+      user = new UserModel({
+        username,
+        email: data.email,
+        password: "-", // default password atau null
+        isGoogleUser: true,
+      });
+
+      await user.save();
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      status: "Success",
+      message: "Login berhasil",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Error in googleCallbackLogin:", error);
+    return res.status(500).json({
       status: "Failed",
-      message: "Gagal mendapatkan access token dari Google",
+      message: error.message || "Terjadi kesalahan saat login dengan Google.",
     });
   }
-
-  client.setCredentials(tokens);
-
-  const oauth2 = google.oauth2({
-    auth: client,
-    version: "v2",
-  });
-
-  const { data } = await oauth2.userinfo.get();
-
-  if (!data.email || !data.name) {
-    return res.status(400).json({
-      data: data,
-    });
-  }
-
-  let user = await UserModel.findOne({ email: data.email });
-
-  if (!user) {
-    user = new UserModel({
-      username: data.name,
-      email: data.email,
-      password: "-", // atau null
-      isGoogleUser: true,
-    });
-    await user.save();
-  }
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
-  });
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true, // use HTTPS in production
-    sameSite: "Strict", // prevent CSRF
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-
-  // res.redirect(`https://nutriste.vercel.app/auth-success?token=${tokens}`);
-
-  res.status(200).json({
-    status: "Success",
-    message: "Login berhasil",
-    token: token,
-    user: {
-      username: data.name,
-      email: data.email,
-    },
-  });
 };
 
 // export const googleSignIn = async (req, res) => {
