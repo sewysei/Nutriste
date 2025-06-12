@@ -38,7 +38,7 @@ export const googleCallbackLogin = async (req, res) => {
     version: "v2",
   });
 
-  const { data } = await oauth2.userInfo.get();
+  const { data } = await oauth2.userinfo.get();
 
   if (!data.email || !data.name) {
     return res.status(400).json({
