@@ -10,6 +10,7 @@ import { verifyOtpCookie } from "./verifyOTP.js";
 import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
+import { googleCallbackLogin } from "./handler/AUTH/googleRegister.js";
 import { googlePassword } from "./handler/AUTH/password.js";
 import { verifyOTPEmail } from "./handler/AUTH/verifyEmail.js";
 import { loginUser } from "./handler/AUTH/login.js";
@@ -41,7 +42,9 @@ app.get("/", (req, res) => {
 
 app.post("/auth/register", registerUser);
 
-app.post("/auth/google", googleSignIn);
+app.get("/auth/google", googleSignIn);
+
+app.get("/auth/google/callback", googleCallbackLogin);
 
 app.post("/auth/password", verifyToken, googlePassword); // Fix googlePassword handler
 

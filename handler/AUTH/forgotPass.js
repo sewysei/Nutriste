@@ -33,7 +33,7 @@ export const forgotPassword = async (req, res) => {
     }
 
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
     const otpVerified = false;
 
     await checkUser.updateOne({ $set: { otp, otpExpires, otpVerified } });
@@ -50,7 +50,7 @@ export const forgotPassword = async (req, res) => {
       to: email,
       subject: "Reset Password OTP Code",
       html: `<p>Kode OTP Anda adalah: ${otp}</p>
-             <p>Kode akan kadaluarsa dalam 10 menit.</p>`,
+             <p>Kode akan kadaluarsa dalam 5 menit.</p>`,
     });
 
     const otpCookie = jwt.sign({ otp }, process.env.JWT_SECRET, {

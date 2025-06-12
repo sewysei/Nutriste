@@ -78,7 +78,7 @@ export const registerUser = async (req, res) => {
     const savedUser = await user.save();
 
     const otp = Math.floor(10000 + Math.random() * 90000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
     const otpVerified = false;
 
     await savedUser.updateOne({ $set: { otp, otpExpires, otpVerified } });
@@ -101,7 +101,7 @@ export const registerUser = async (req, res) => {
               <p>Halo,</p>
               <p>Kami menerima permintaan untuk memverifikasi email Anda. Gunakan kode OTP di bawah ini untuk melanjutkan proses verifikasi:</p>
               <p style="text-align: center; font-size: 24px; font-weight: bold; color: #007bff; margin: 25px 0;">${otp}</p>
-              <p>Kode ini hanya berlaku selama <strong>6 jam</strong>. Mohon jangan membagikan kode ini kepada siapa pun.</p>
+              <p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Mohon jangan membagikan kode ini kepada siapa pun.</p>
               <p>Jika Anda tidak merasa meminta kode OTP ini, silakan abaikan email ini. Akun Anda tetap aman.</p>
               <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
               <p style="font-size: 12px; color: #777777; text-align: center;">Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.</p>
