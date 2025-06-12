@@ -1,11 +1,10 @@
-import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import dotenv from "dotenv";
 import { UserModel } from "../../models/users.js";
 dotenv.config();
 
-const client = new OAuth2Client(
+const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID2,
   process.env.GOOGLE_CLIENT_SECRET2,
   "https://nutriste.vercel.app/auth/google/callback"
@@ -16,7 +15,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile",
 ];
 
-const authorizationUrl = client.generateAuthUrl({
+const authorizationUrl = oauth2Client.generateAuthUrl({
   access_type: "offline",
   scope: scopes,
   include_granted_scopes: true,
@@ -38,7 +37,7 @@ export const googleCallbackLogin = async (req, res) => {
   }
 
   try {
-    const { tokens } = await client.getToken(code);
+    const { tokens } = await oauth2Client.getToken(code);
 
     if (!tokens || !tokens.access_token) {
       return res.status(400).json({
@@ -47,12 +46,10 @@ export const googleCallbackLogin = async (req, res) => {
       });
     }
 
-    client.setCredentials({
-      access_token: tokens.access_token,
-    });
+    oauth2Client.setCredentials(tokens);
 
     const oauth2 = google.oauth2({
-      auth: client,
+      auth: oauth2Client,
       version: "v2",
     });
 
