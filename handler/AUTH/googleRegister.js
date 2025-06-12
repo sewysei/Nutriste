@@ -31,6 +31,13 @@ export const googleCallbackLogin = async (req, res) => {
 
   const { tokens } = await client.getToken(code.toString());
 
+  if (!tokens.access_token) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Gagal mendapatkan access token dari Google",
+    });
+  }
+
   client.setCredentials(tokens);
 
   const oauth2 = google.oauth2({
