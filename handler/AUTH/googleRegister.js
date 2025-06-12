@@ -29,6 +29,13 @@ export const googleSignIn = (req, res) => {
 export const googleCallbackLogin = async (req, res) => {
   const { code } = req.query;
 
+  if (!code) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Kode otorisasi Google tidak ditemukan di query params.",
+    });
+  }
+
   const { tokens } = await client.getToken(code.toString());
 
   if (!tokens.access_token) {
