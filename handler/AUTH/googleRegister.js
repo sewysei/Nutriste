@@ -47,7 +47,9 @@ export const googleCallbackLogin = async (req, res) => {
       });
     }
 
-    client.setCredentials(tokens);
+    client.setCredentials({
+      access_token: tokens.access_token,
+    });
 
     const oauth2 = google.oauth2({
       auth: client,
