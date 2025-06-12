@@ -115,7 +115,7 @@ export const registerUser = async (req, res) => {
         id: savedUser._id,
         username: savedUser.username,
         email: savedUser.email,
-        token,
+        otp,
       },
     });
   } catch (err) {
