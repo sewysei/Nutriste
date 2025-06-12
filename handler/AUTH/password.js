@@ -1,7 +1,5 @@
 import { UserModel } from "../../models/users.js";
-// import { sendVerificationEmail } from "./sendMail.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -44,12 +42,6 @@ export const googlePassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
-
-    const verifyToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "6h",
-    });
-
-    // await sendVerificationEmail(user.email, verifyToken);
 
     await user.save();
 

@@ -1,45 +1,41 @@
 import { UserModel } from "../../models/users.js";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-dotenv.config();
 
-export const verifyEmail = async (req, res) => {
-  const token = req.query.token;
-
-  if (!token) {
-    return res.status(400).json({
-      status: "Failed",
-      message: "Token verifikasi tidak dapat ditemukan",
-    });
+export const verifyOTPEmail = async (req, res) => {
+  const otp = req.body.otp?.toString();
+  if (!otp) {
+    return res
+      .status(400)
+      .json({ status: "Failed", message: "OTP tidak boleh kosong!" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded.userId);
+    const checkUser = await UserModel.findOne({ otp });
 
-    if (!user) {
-      return res.status(404).json({
-        status: "Failed",
-        message: "User tidak ditemukan",
-      });
+    if (!checkUser || checkUser.otp !== otp) {
+      return res
+        .status(400)
+        .json({ status: "Failed", message: `OTP Invalid!` });
     }
 
-    if (user.isVerified) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Email sudah terverifikasi. Silahkan log in",
-      });
+    if (checkUser.otpExpires < new Date()) {
+      return res
+        .status(400)
+        .json({ status: "Failed", message: "OTP sudah kadaluwarsa." });
     }
 
-    user.isVerified = true;
-    await user.save();
-
-    res.status(200).json({
-      status: "Success",
-      message: "Berhasil memverifikasi email!",
+    await checkUser.updateOne({
+      $set: { otpVerified: true },
+      $unset: {
+        otp: "",
+        otpExpires: "",
+      },
     });
+
+    return res
+      .status(200)
+      .json({ status: "Success", message: "Verifikasi OTP berhasil!" });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "Failed",
       message: `Catch error ${err.message}`,
     });

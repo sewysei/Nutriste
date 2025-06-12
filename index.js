@@ -11,7 +11,7 @@ import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
 import { googlePassword } from "./handler/AUTH/password.js";
-import { verifyEmail } from "./handler/AUTH/verifyEmail.js";
+import { verifyOTPEmail } from "./handler/AUTH/verifyEmail.js";
 import { loginUser } from "./handler/AUTH/login.js";
 import { forgotPassword } from "./handler/AUTH/forgotPass.js";
 import { resetPassword } from "./handler/AUTH/resetPass.js";
@@ -45,7 +45,7 @@ app.post("/auth/google", googleSignIn);
 
 app.post("/auth/password", verifyToken, googlePassword); // Fix googlePassword handler
 
-app.get("/auth/verify-email", verifyEmail);
+app.get("/auth/verify-email", verifyOTPEmail);
 
 app.post("/auth/login", loginUser);
 

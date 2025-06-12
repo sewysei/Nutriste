@@ -6,19 +6,25 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  const { input, password } = req.body;
+  if (!input) {
     return res.status(400).json({
       status: "Failed",
-      message: "Email dan password tidak boleh kosong",
+      message: "Email atau username tidak boleh kosong",
+    });
+  } else if (!password) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Password tidak boleh kosong",
     });
   }
+
   try {
-    const checkUser = await UserModel.findOne({ email });
+    const checkUser = await UserModel.findOne({ input });
     if (!checkUser) {
       return res.status(400).json({
         status: "Failed",
-        message: "Email atau password tidak valid",
+        message: "Email, username atau password tidak valid",
       });
     }
     if (!checkUser.isVerified) {
@@ -27,7 +33,7 @@ export const loginUser = async (req, res) => {
         message: "Silahkan verifikasi email Anda terlebih dahulu",
       });
     }
-    const isMatch = await bcrypt.compare(password, checkUser.password);
+    const isMatch = bcrypt.compare(password, checkUser.password);
     if (!isMatch) {
       return res
         .status(400)
@@ -35,6 +41,14 @@ export const loginUser = async (req, res) => {
     }
     const token = jwt.sign({ userId: checkUser._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
+    });
+
+    await checkUser.updateOne({
+      $unset: {
+        otpVerified: "",
+        otp: "",
+        otpExpires: "",
+      },
     });
 
     res.cookie("token", token, {
