@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
       user: {
         username: checkUser.username,
         email: checkUser.email,
-        checker: checkUser.isFilled,
+        isFilled: checkUser.isFilled,
       },
     });
   } catch (err) {
