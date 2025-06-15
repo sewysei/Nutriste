@@ -26,6 +26,7 @@ import { getChatHistory } from "./handler//CHATBOT/getChatHistory.js";
 import { deleteUser } from "./handler/AUTH/deleteAcc.js";
 import { logoutUser } from "./handler/AUTH/logout.js";
 import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
+import { resendOTP } from "./handler/AUTH/sendOTP.js";
 
 const app = express();
 
@@ -63,6 +64,8 @@ app.post("/auth/login", loginUser);
 app.post("/auth/forgot-password", forgotPassword);
 
 app.post("/auth/verifyOTP", verifyOTP);
+
+app.get("/auth/resend-otp", resendOTP);
 
 app.post("/auth/reset-password", resetPassword);
 
