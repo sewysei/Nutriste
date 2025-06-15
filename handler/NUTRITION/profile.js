@@ -47,7 +47,7 @@ export const addProfile = async (req, res) => {
     }
 
     const existingProfile = await HealthProfileModel.findOne({ userId });
-    const user = await UserModel.findOne({ userId });
+    const user = await UserModel.findById(userId);
 
     if (existingProfile) {
       existingProfile.age = age;
