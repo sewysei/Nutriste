@@ -29,11 +29,13 @@ export const loginUser = async (req, res) => {
         message: "Email, username atau password tidak valid",
       });
     }
-    if (!checkUser.otpVerified) {
-      return res.status(401).json({
-        status: "Failed",
-        message: "Silahkan verifikasi email Anda terlebih dahulu",
-      });
+    if (!checkUser.isVerified) {
+      if (!checkUser.otpVerified) {
+        return res.status(401).json({
+          status: "Failed",
+          message: "Silahkan verifikasi email Anda terlebih dahulu",
+        });
+      }
     }
     const isMatch = bcrypt.compare(password, checkUser.password);
     if (!isMatch) {
@@ -47,6 +49,7 @@ export const loginUser = async (req, res) => {
 
     await checkUser.updateOne({
       $unset: {
+        isVerified: true,
         otpVerified: "",
         otp: "",
         otpExpires: "",
