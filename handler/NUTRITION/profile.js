@@ -62,8 +62,7 @@ export const addProfile = async (req, res) => {
       existingProfile.favouriteFood = favouriteFood;
       existingProfile.purposes = purposes;
       existingProfile.BMI = BMI;
-      user.isFilled = true;
-      await user.save();
+
       if (photoBase64) {
         existingProfile.photo = photoBase64;
       }
@@ -73,8 +72,8 @@ export const addProfile = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Profil Kesehatan diperbarui.",
-        data: updatedProfile,
         isFilled: user.isFilled,
+        data: updatedProfile,
       });
     }
 
@@ -95,13 +94,16 @@ export const addProfile = async (req, res) => {
       BMI,
     });
     const savedProfile = await newHealthProfile.save();
-    user.isFilled = true;
-    await user.save();
+
+    await user.updateOne({
+      $set: { isFilled: true },
+    });
+
     res.status(200).json({
       status: "Success",
       message: "Profil Kesehatan berhasil dibuat.",
-      data: savedProfile,
       isFilled: user.isFilled,
+      data: savedProfile,
     });
   } catch (err) {
     res.status(500).json({
