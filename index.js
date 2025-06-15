@@ -7,7 +7,6 @@ dotenv.config();
 
 import { connectDB } from "./db.js";
 import { verifyToken } from "./verifyToken.js";
-import { verifyOtpCookie } from "./verifyOTP.js";
 import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
@@ -56,9 +55,9 @@ app.get("/auth/google", googleSignIn);
 
 app.get("/auth/google/callback", googleCallbackLogin);
 
-app.post("/auth/password", verifyToken, googlePassword); // Fix googlePassword handler
+app.post("/auth/password", verifyToken, googlePassword);
 
-app.get("/auth/verify-email", verifyOTPEmail);
+app.get("/auth/verify-email", verifyOTP);
 
 app.post("/auth/login", loginUser);
 
@@ -66,7 +65,7 @@ app.post("/auth/forgot-password", forgotPassword);
 
 app.post("/auth/verifyOTP", verifyOTP);
 
-app.post("/auth/reset-password", verifyOtpCookie, resetPassword);
+app.post("/auth/reset-password", resetPassword);
 
 app.use("/uploads", express.static("uploads"));
 

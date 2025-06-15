@@ -1,8 +1,9 @@
 import { UserModel } from "../../models/users.js";
 
 export const verifyOTP = async (req, res) => {
-  const email = req.body;
-  if (!email) {
+  const { email, otp } = req.body;
+
+  if (!otp) {
     return res.status(400).json({
       status: "Failed",
       message: "OTP tidak boleh kosong!",
