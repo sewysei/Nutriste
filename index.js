@@ -30,9 +30,20 @@ import { resendOTP } from "./handler/AUTH/sendOTP.js";
 
 const app = express();
 
+const origins = ["http://localhost:3000", "https://nutriste-black.vercel.app"];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (origins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
