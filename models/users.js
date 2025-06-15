@@ -22,9 +22,11 @@ const userSchema = new Schema(
     },
     otp: {
       type: String,
+      required: true,
     },
     otpExpires: {
       type: Date,
+      required: true,
     },
     otpVerified: {
       type: Boolean,

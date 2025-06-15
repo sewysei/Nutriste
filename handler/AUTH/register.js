@@ -103,9 +103,6 @@ export const registerUser = async (req, res) => {
     res.status(200).json({
       status: "Success",
       message: "Pendaftaran berhasil, cek email Anda untuk verifikasi",
-      otp: savedUser.otp,
-      otpExpires: savedUser.otpExpires,
-      otpVerified: savedUser.otpVerified,
       savedUser,
     });
   } catch (err) {
