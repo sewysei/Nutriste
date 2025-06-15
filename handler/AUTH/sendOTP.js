@@ -39,6 +39,7 @@ export const resendOTP = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       message: "OTP berhasil dikirim ulang. Cek email Anda",
+      otp,
     });
   } catch (err) {
     return res.status(500).json({

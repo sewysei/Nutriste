@@ -64,6 +64,7 @@ export const forgotPassword = async (req, res) => {
     return res.status(200).json({
       status: "Success",
       message: "Kode OTP untuk me-reset password terkirim. Cek email Anda.",
+      otp,
     });
   } catch (err) {
     res.status(500).json({

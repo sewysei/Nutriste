@@ -57,14 +57,12 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    checkUser.password = hashedPassword;
     await checkUser.updateOne({
+      $set: { password: hashedPassword },
       $unset: {
         otpVerified: "",
       },
     });
-
-    await checkUser.save();
 
     return res.status(200).json({
       status: "Success",
