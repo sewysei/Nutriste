@@ -66,14 +66,18 @@ export const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({ username, email, password: hashedPassword });
-    const savedUser = await user.save();
-
-    const otp = Math.floor(10000 + Math.random() * 90000).toString();
-    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    const otp = await Math.floor(10000 + Math.random() * 90000).toString();
+    const otpExpires = await new Date(Date.now() + 5 * 60 * 1000);
     const otpVerified = false;
-
-    await savedUser.updateOne({ $set: { otp, otpExpires, otpVerified } });
+    const user = new UserModel({
+      username,
+      email,
+      password: hashedPassword,
+      otp,
+      otpExpires,
+      otpVerified,
+    });
+    const savedUser = await user.save();
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
