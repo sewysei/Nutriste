@@ -12,6 +12,10 @@ const userSchema = new Schema(
       type: String,
     },
     isVerified: { type: Boolean, default: false },
+    isFilled: {
+      type: Boolean,
+      default: false,
+    },
     isGoogleUser: {
       type: Boolean,
       default: false,

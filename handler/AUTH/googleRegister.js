@@ -96,6 +96,8 @@ export const googleCallbackLogin = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    //return res.redirect(`https://`)
+
     return res.status(200).json({
       status: "Success",
       message: "Login berhasil",
@@ -106,83 +108,11 @@ export const googleCallbackLogin = async (req, res) => {
         email: user.email,
       },
     });
-  } catch (error) {
-    console.error("Error in googleCallbackLogin:", error);
+  } catch (err) {
+    console.error("Error in googleCallbackLogin:", err);
     return res.status(500).json({
       status: "Failed",
-      message: error.message || "Terjadi kesalahan saat login dengan Google.",
+      message: `Catch error ${err.message}`,
     });
   }
 };
-
-// export const googleSignIn = async (req, res) => {
-//   const { token } = req.body;
-
-//   try {
-//     const ticket = await client.verifyIdToken({
-//       idToken: token,
-//       audience: process.env.GOOGLE_CLIENT_ID,
-//     });
-
-//     const payload = ticket.getPayload();
-//     const { email, name, sub: googleId } = payload;
-
-//     let user = await UserModel.findOne({ email });
-
-//     if (user && !user.isGoogleUser) {
-//       return res.status(400).json({
-//         status: "Failed",
-//         message:
-//           "Email sudah terdaftar dengan metode lain. Silakan login secara manual.",
-//       });
-//     }
-//     if (!user) {
-//       // User belum ada, daftarkan
-//       let usernameBase = name
-//         ? name.replace(/\s+/g, "_").toLowerCase()
-//         : "googleuser";
-//       let username = usernameBase;
-//       let count = 1;
-
-//       while (await UserModel.findOne({ username })) {
-//         username = `${usernameBase}${count}`;
-//         count++;
-//       }
-
-//       user = new UserModel({
-//         username,
-//         email,
-//         password: null, // kosong karena pakai Google
-//         isGoogleUser: true, // opsional
-//       });
-//       await user.save();
-//     }
-
-//     const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-//       expiresIn: "7d",
-//     });
-
-//     res.cookie("token", jwtToken, {
-//       httpOnly: true,
-//       secure: true, // use HTTPS in production
-//       sameSite: "Strict", // prevent CSRF
-//       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-//     });
-
-//     res.status(200).json({
-//       status: "Success",
-//       message: "Login dengan Google berhasil",
-//       user: {
-//         id: user._id,
-//         username: user.username,
-//         email: user.email,
-//         token: jwtToken,
-//       },
-//     });
-//   } catch (err) {
-//     res.status(500).json({
-//       status: "Failed",
-//       message: `Catch error ${err.message}`,
-//     });
-//   }
-// };
