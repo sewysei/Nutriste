@@ -12,7 +12,6 @@ import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
 import { googleCallbackLogin } from "./handler/AUTH/googleRegister.js";
 import { googlePassword } from "./handler/AUTH/password.js";
-import { verifyOTPEmail } from "./handler/AUTH/verifyOTPEmail.js";
 import { loginUser } from "./handler/AUTH/login.js";
 import { forgotPassword } from "./handler/AUTH/forgotPass.js";
 import { resetPassword } from "./handler/AUTH/resetPass.js";
@@ -67,6 +66,8 @@ app.post("/auth/verifyOTP", verifyOTP);
 
 app.post("/auth/reset-password", resetPassword);
 
+app.post("/auth/logout", logoutUser);
+
 app.use("/uploads", express.static("uploads"));
 
 app.post("/profile", verifyToken, upload.single("photo"), addProfile);
@@ -86,8 +87,6 @@ app.post("/chat", verifyToken, chatBot);
 app.get("/chat", verifyToken, getChatHistory);
 
 app.post("/auth/delete", deleteUser);
-
-app.post("/auth/logout", logoutUser);
 
 app.listen(8080, () => {
   console.log("Server running on port 8080");
