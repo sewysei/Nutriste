@@ -20,14 +20,16 @@ export const loginUser = async (req, res) => {
   }
 
   try {
-    const checkUser = await UserModel.findOne({ input });
+    const checkUser = await UserModel.findOne({
+      $or: [{ email: input }, { username: input }],
+    });
     if (!checkUser) {
       return res.status(400).json({
         status: "Failed",
         message: "Email, username atau password tidak valid",
       });
     }
-    if (!checkUser.isVerified) {
+    if (!checkUser.otpVerified) {
       return res.status(401).json({
         status: "Failed",
         message: "Silahkan verifikasi email Anda terlebih dahulu",
