@@ -48,7 +48,7 @@ export const resetPassword = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const isSame = bcrypt.compare(newPassword, checkUser.password);
+    const isSame = await bcrypt.compare(newPassword, checkUser.password);
 
     if (isSame) {
       return res.status(400).json({
