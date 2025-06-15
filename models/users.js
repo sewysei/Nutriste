@@ -20,9 +20,18 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    otp: String,
-    otpExpires: Date,
-    otpVerified: Boolean,
+    otp: {
+      type: String,
+      default: "",
+    },
+    otpExpires: {
+      type: Date,
+      default: "",
+    },
+    otpVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
