@@ -51,8 +51,6 @@ export const loginUser = async (req, res) => {
       $set: { isVerified: true },
       $unset: {
         otpVerified: "",
-        otp: "",
-        otpExpires: "",
       },
     });
 

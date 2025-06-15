@@ -7,6 +7,6 @@ export const logoutUser = (req, res) => {
 
   res.status(200).json({
     status: "Success",
-    msg: "Logout Berhasil.",
+    message: "Logout Berhasil.",
   });
 };

@@ -13,7 +13,7 @@ import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
 import { googleCallbackLogin } from "./handler/AUTH/googleRegister.js";
 import { googlePassword } from "./handler/AUTH/password.js";
-import { verifyOTPEmail } from "./handler/AUTH/verifyEmail.js";
+import { verifyOTPEmail } from "./handler/AUTH/verifyOTPEmail.js";
 import { loginUser } from "./handler/AUTH/login.js";
 import { forgotPassword } from "./handler/AUTH/forgotPass.js";
 import { resetPassword } from "./handler/AUTH/resetPass.js";
@@ -25,6 +25,7 @@ import { getMealImage } from "./handler/NUTRITION/mealImages.js";
 import { getRecipes } from "./handler/NUTRITION/recipes.js";
 import { chatBot } from "./handler/CHATBOT/chatbot.js";
 import { getChatHistory } from "./handler//CHATBOT/getChatHistory.js";
+import { deleteUser } from "./handler/AUTH/deleteAcc.js";
 import { logoutUser } from "./handler/AUTH/logout.js";
 import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 
@@ -84,6 +85,8 @@ app.get("/recipes", verifyToken, getRecipes);
 app.post("/chat", verifyToken, chatBot);
 
 app.get("/chat", verifyToken, getChatHistory);
+
+app.post("/auth/delete", deleteUser);
 
 app.post("/auth/logout", logoutUser);
 

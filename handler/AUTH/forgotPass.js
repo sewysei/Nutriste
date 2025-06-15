@@ -1,7 +1,6 @@
 import { UserModel } from "../../models/users.js";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -49,19 +48,17 @@ export const forgotPassword = async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: email,
       subject: "Reset Password OTP Code",
-      html: `<p>Kode OTP Anda adalah: ${otp}</p>
-             <p>Kode akan kadaluarsa dalam 5 menit.</p>`,
-    });
-
-    const otpCookie = jwt.sign({ otp }, process.env.JWT_SECRET, {
-      expiresIn: "10m",
-    });
-
-    res.cookie("otp", otpCookie, {
-      httpOnly: true,
-      secure: true, // use HTTPS in production
-      sameSite: "Strict", // prevent CSRF
-      maxAge: 10 * 60 * 1000, // 7 days
+      html: `
+            <div style="font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #dddddd; border-radius: 5px;">
+              <h2 style="text-align: center; color: #2c3e50;">Kode OTP Verifikasi Anda</h2>
+              <p>Halo,</p>
+              <p>Kami menerima permintaan untuk mengganti password. Gunakan kode OTP di bawah ini untuk melanjutkan proses penggantian password:</p>
+              <p style="text-align: center; font-size: 24px; font-weight: bold; color: #007bff; margin: 25px 0;">${otp}</p>
+              <p>Kode ini hanya berlaku selama <strong>5 menit</strong>. Mohon jangan membagikan kode ini kepada siapa pun.</p>
+              <p>Jika Anda tidak merasa meminta kode OTP ini, silakan abaikan email ini. Akun Anda tetap aman.</p>
+              <hr style="border: 0; border-top: 1px solid #eeeeee; margin: 20px 0;">
+              <p style="font-size: 12px; color: #777777; text-align: center;">Email ini dikirim secara otomatis. Mohon untuk tidak membalas email ini.</p>
+            </div>`,
     });
 
     return res.status(200).json({

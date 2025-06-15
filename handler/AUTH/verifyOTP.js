@@ -1,20 +1,22 @@
 import { UserModel } from "../../models/users.js";
 
 export const verifyOTP = async (req, res) => {
-  const otp = req.body.otp?.toString();
-  if (!otp) {
-    return res
-      .status(400)
-      .json({ status: "Failed", message: "OTP tidak boleh kosong!" });
+  const email = req.body;
+  if (!email) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "OTP tidak boleh kosong!",
+    });
   }
 
   try {
-    const checkUser = await UserModel.findOne({ otp });
+    const checkUser = await UserModel.findOne({ email });
 
-    if (!checkUser || checkUser.otp !== otp) {
-      return res
-        .status(400)
-        .json({ status: "Failed", message: `OTP Invalid!` });
+    if (!checkUser) {
+      return res.status(404).json({
+        status: "Failed",
+        message: `User tidak ditemukan`,
+      });
     }
 
     if (checkUser.otpExpires < new Date()) {
@@ -23,11 +25,18 @@ export const verifyOTP = async (req, res) => {
         .json({ status: "Failed", message: "OTP sudah kadaluwarsa." });
     }
 
-    await checkUser.updateOne({ $set: { otpVerified: true } });
+    await checkUser.updateOne({
+      $set: { otpVerified: true },
+      $unset: {
+        otp: "",
+        otpExpires: "",
+      },
+    });
 
-    return res
-      .status(200)
-      .json({ status: "Success", message: "Verifikasi OTP berhasil!" });
+    return res.status(200).json({
+      status: "Success",
+      message: "Verifikasi OTP berhasil!",
+    });
   } catch (err) {
     return res.status(500).json({
       status: "Failed",

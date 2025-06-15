@@ -5,16 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const resetPassword = async (req, res) => {
-  const checkOtp = req.userOTP;
-  const { newPassword, confirmPassword } = req.body;
+  const { email, newPassword, confirmPassword } = req.body;
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-  if (!checkOtp) {
-    return res.status(401).json({
-      status: "Failed",
-      message: "Akses ditolak.",
-    });
-  }
 
   if (!newPassword || !confirmPassword) {
     return res.status(400).json({
@@ -39,7 +31,7 @@ export const resetPassword = async (req, res) => {
   }
 
   try {
-    const checkUser = await UserModel.findOne({ otp: checkOtp });
+    const checkUser = await UserModel.findOne({ email });
 
     if (!checkUser) {
       return res.status(404).json({
@@ -73,17 +65,13 @@ export const resetPassword = async (req, res) => {
         otpExpires: "",
       },
     });
-    await checkUser.save();
 
-    res.clearCookie("otp", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-    });
+    await checkUser.save();
 
     return res.status(200).json({
       status: "Success",
       message: "Reset password berhasil.",
+      checkUser,
     });
   } catch (err) {
     res.status(500).json({

@@ -2,7 +2,6 @@ import { UserModel } from "../../models/users.js";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const registerUser = async (req, res) => {
@@ -66,8 +65,8 @@ export const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const otp = await Math.floor(10000 + Math.random() * 90000).toString();
-    const otpExpires = await new Date(Date.now() + 5 * 60 * 1000);
+    const otp = Math.floor(10000 + Math.random() * 90000).toString();
+    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
     const otpVerified = false;
     const user = new UserModel({
       username,
