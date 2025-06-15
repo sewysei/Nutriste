@@ -48,8 +48,8 @@ export const loginUser = async (req, res) => {
     });
 
     await checkUser.updateOne({
+      $set: { isVerified: true },
       $unset: {
-        isVerified: true,
         otpVerified: "",
         otp: "",
         otpExpires: "",
