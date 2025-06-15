@@ -65,7 +65,7 @@ app.post("/auth/forgot-password", forgotPassword);
 
 app.post("/auth/verifyOTP", verifyOTP);
 
-app.get("/auth/resend-otp", resendOTP);
+app.post("/auth/resend-otp", resendOTP);
 
 app.post("/auth/reset-password", resetPassword);
 

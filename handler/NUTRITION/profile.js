@@ -1,4 +1,5 @@
 import { HealthProfileModel } from "../../models/healthData.js";
+import { UserModel } from "../../models/users.js";
 
 export const addProfile = async (req, res) => {
   const {
@@ -46,6 +47,7 @@ export const addProfile = async (req, res) => {
     }
 
     const existingProfile = await HealthProfileModel.findOne({ userId });
+    const user = await UserModel.findOne({ userId });
 
     if (existingProfile) {
       existingProfile.age = age;
@@ -60,7 +62,8 @@ export const addProfile = async (req, res) => {
       existingProfile.favouriteFood = favouriteFood;
       existingProfile.purposes = purposes;
       existingProfile.BMI = BMI;
-
+      user.isFilled = true;
+      await user.save();
       if (photoBase64) {
         existingProfile.photo = photoBase64;
       }
@@ -71,6 +74,7 @@ export const addProfile = async (req, res) => {
         status: "Success",
         message: "Profil Kesehatan diperbarui.",
         data: updatedProfile,
+        isFilled: user.isFilled,
       });
     }
 
@@ -90,12 +94,14 @@ export const addProfile = async (req, res) => {
       photo: photoBase64,
       BMI,
     });
-
     const savedProfile = await newHealthProfile.save();
+    user.isFilled = true;
+    await user.save();
     res.status(200).json({
       status: "Success",
       message: "Profil Kesehatan berhasil dibuat.",
       data: savedProfile,
+      isFilled: user.isFilled,
     });
   } catch (err) {
     res.status(500).json({
