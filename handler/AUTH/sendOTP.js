@@ -2,7 +2,7 @@ import { UserModel } from "../../models/users.js";
 import nodemailer from "nodemailer";
 
 export const resendOTP = async (req, res) => {
-  const email = req.body;
+  const { email } = req.body;
   try {
     const checkUser = await UserModel.findOne({ email });
 
