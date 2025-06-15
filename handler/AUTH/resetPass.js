@@ -61,8 +61,6 @@ export const resetPassword = async (req, res) => {
     await checkUser.updateOne({
       $unset: {
         otpVerified: "",
-        otp: "",
-        otpExpires: "",
       },
     });
 
