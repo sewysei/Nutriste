@@ -1,11 +1,11 @@
-import { NutritionTargetModel } from "../../models/nutritionTarget";
+import { NutritionTargetModel } from "../../models/nutritionTarget.js";
 
 export const nutritionTarget = async (req, res) => {
   try {
     const { calorie, carbohydrate, protein, fat } = req.body;
     const userId = req.userId;
 
-    let checkUser = await NutritionTargetModel.findById({ userId });
+    let checkUser = await NutritionTargetModel.findOne({ userId });
 
     if (checkUser) {
       checkUser.calorie = calorie;
@@ -17,12 +17,13 @@ export const nutritionTarget = async (req, res) => {
 
       return res.status(200).json({
         status: "Success",
-        message: "Target Nutrisi diperbaharui",
+        message: "Target Nutrisi diperbarui",
         updatedTarget,
       });
     }
 
     const newTarget = new NutritionTargetModel({
+      userId,
       calorie,
       carbohydrate,
       protein,

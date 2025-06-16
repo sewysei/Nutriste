@@ -29,6 +29,7 @@ import { deleteUser } from "./handler/AUTH/deleteAcc.js";
 import { logoutUser } from "./handler/AUTH/logout.js";
 import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 import { resendOTP } from "./handler/AUTH/sendOTP.js";
+import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
 
 const app = express();
 
@@ -97,6 +98,8 @@ app.get("/nutrition", verifyToken, getNutritionSuggestion);
 app.get("/meal-plan", verifyToken, getMealPlan);
 
 app.get("/fun-fact", getFact);
+
+app.post("/target-nutrition", verifyToken, nutritionTarget);
 
 app.get("/meal-plan-images", verifyToken, getMealImage);
 
