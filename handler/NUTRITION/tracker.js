@@ -4,7 +4,23 @@ import { MealPlanModel } from "../../models/mealPlan.js";
 export const nutritionTarget = async (req, res) => {
   try {
     const { calorie, carbohydrate, protein, fat } = req.body;
-    const userId = req.userId;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: "Failed",
+        message: "Tidak ada token dikirim.",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+    // Check if userId is present
+    if (!userId) {
+      return res.status(401).json({
+        status: "Failed",
+        message: "Akses ditolak.",
+      });
+    }
     const selectedMealPlan = await MealPlanModel.findOne({ userId });
     let checkUser = await NutritionTargetModel.findOne({ userId });
 

@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDB } from "./db.js";
-import { verifyToken } from "./verifyToken.js";
+// import { verifyToken } from "./verifyToken.js";
 import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
@@ -30,7 +30,7 @@ import { logoutUser } from "./handler/AUTH/logout.js";
 import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 import { resendOTP } from "./handler/AUTH/sendOTP.js";
 import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
-import { getToken } from "./handler/AUTH/getToken.js";
+// import { getToken } from "./handler/AUTH/getToken.js";
 
 const app = express();
 
@@ -53,7 +53,6 @@ app.use(
 );
 
 app.use(express.json());
-app.use(cookieParser());
 
 connectDB();
 
@@ -70,7 +69,7 @@ app.get("/auth/google", googleSignIn);
 
 app.get("/auth/google/callback", googleCallbackLogin);
 
-app.post("/auth/password", verifyToken, googlePassword);
+app.post("/auth/password", googlePassword);
 
 app.get("/auth/verify-email", verifyOTP);
 
@@ -86,31 +85,31 @@ app.post("/auth/reset-password", resetPassword);
 
 app.post("/auth/logout", logoutUser);
 
-app.get("/auth/get-token", verifyToken, getToken);
+// app.get("/auth/get-token", verifyToken, getToken);
 
 app.use("/uploads", express.static("uploads"));
 
-app.post("/profile", verifyToken, upload.single("photo"), addProfile);
+app.post("/profile", upload.single("photo"), addProfile);
 
-app.get("/profile", verifyToken, getProfile);
+app.get("/profile", getProfile);
 
-app.get("/calories", verifyToken, getCaloriesInPeriod);
+app.get("/calories", getCaloriesInPeriod);
 
-app.get("/nutrition", verifyToken, getNutritionSuggestion);
+app.get("/nutrition", getNutritionSuggestion);
 
-app.get("/meal-plan", verifyToken, getMealPlan);
+app.get("/meal-plan", getMealPlan);
 
 app.get("/fun-fact", getFact);
 
-app.post("/target-nutrition", verifyToken, nutritionTarget);
+app.post("/target-nutrition", nutritionTarget);
 
-app.get("/meal-plan-images", verifyToken, getMealImage);
+app.get("/meal-plan-images", getMealImage);
 
-app.get("/recipes", verifyToken, getRecipes);
+app.get("/recipes", getRecipes);
 
-app.post("/chat", verifyToken, chatBot);
+app.post("/chat", chatBot);
 
-app.get("/chat", verifyToken, getChatHistory);
+app.get("/chat", getChatHistory);
 
 app.post("/auth/delete", deleteUser);
 

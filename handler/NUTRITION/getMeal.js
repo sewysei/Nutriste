@@ -3,14 +3,23 @@ import { HealthProfileModel } from "../../models/healthData.js"; // Needed to ge
 import { getCalories } from "./countCalories.js";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
-import { nanoid } from "nanoid";
 dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const getMealPlan = async (req, res) => {
   try {
-    const userId = req.userId;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: "Failed",
+        message: "Tidak ada token dikirim.",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+    // Check if userId is present
     if (!userId) {
       return res.status(401).json({
         status: "Failed",
@@ -58,7 +67,7 @@ export const getMealPlan = async (req, res) => {
         item.image = null;
       }
 
-      await MealPlanModel.replaceOne(
+      const updatedPlan = await MealPlanModel.replaceOne(
         { userId },
         {
           userId,
@@ -71,7 +80,7 @@ export const getMealPlan = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Success updating meal plan",
-        suggestion: mealPlanText,
+        suggestion: updatedPlan.response,
       });
     }
 

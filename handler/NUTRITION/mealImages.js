@@ -3,12 +3,21 @@ import { MealPlanModel } from "../../models/mealPlan.js";
 
 export const getMealImage = async (req, res) => {
   try {
-    const userId = req.userId;
-
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: "Failed",
+        message: "Tidak ada token dikirim.",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+    // Check if userId is present
     if (!userId) {
       return res.status(401).json({
         status: "Failed",
-        message: "Akses ditolak. User tidak terautentikasi.",
+        message: "Akses ditolak.",
       });
     }
 

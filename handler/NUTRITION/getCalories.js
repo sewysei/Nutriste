@@ -2,9 +2,23 @@ import { CalorieTrackerModel } from "../../models/calorieTracker.js";
 import { getCalories } from "./countCalories.js";
 
 export const getCaloriesInPeriod = async (req, res) => {
-  const userId = req.userId;
   const days = parseInt(req.query.days) || 7; // Default to 7 days if not specified
-
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      status: "Failed",
+      message: "Tidak ada token dikirim.",
+    });
+  }
+  const token = authHeader.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decoded.userId;
+  if (!userId) {
+    return res.status(401).json({
+      status: "Failed",
+      message: "Akses ditolak.",
+    });
+  }
   await getCalories(userId);
   const fromDate = new Date();
   fromDate.setDate(fromDate.getDate() - days);
