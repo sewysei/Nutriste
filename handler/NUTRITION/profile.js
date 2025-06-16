@@ -85,6 +85,10 @@ export const addProfile = async (req, res) => {
         existingProfile.photo = photoBase64;
       }
 
+      await user.updateOne({
+        $set: { isFilled: true },
+      });
+
       const updatedProfile = await existingProfile.save();
 
       return res.status(200).json({
