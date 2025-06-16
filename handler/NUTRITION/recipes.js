@@ -56,7 +56,7 @@ export const getRecipes = async (req, res) => {
         const cleanedText = await mealRecipeText
           .replace(/```json|```/g, "")
           .trim();
-        const mealRecipeJSON = JSON.parse(cleanedText);
+        const mealRecipeJSON = await JSON.parse(cleanedText);
 
         await mealRecipeModel.updateOne(
           { userId },
@@ -71,7 +71,7 @@ export const getRecipes = async (req, res) => {
         return res.status(200).json({
           status: "Success",
           message: "Update resep baru",
-          recipe: cleanedText,
+          recipe: mealRecipeJSON,
         });
       } else {
         return res.status(200).json({
