@@ -62,7 +62,7 @@ export const getMealPlan = async (req, res) => {
 
       const mealPlanText = await mealPlanResponse.text;
       const cleanedText = await mealPlanText.replace(/```json|```/g, "").trim();
-      const mealPlanJson = JSON.parse(cleanedText);
+      const mealPlanJson = await JSON.parse(cleanedText);
 
       for (let item of mealPlanJson.meal_plan) {
         item.image = null;
@@ -81,7 +81,7 @@ export const getMealPlan = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Success updating meal plan",
-        suggestion: cleanedText,
+        suggestion: mealPlanJson,
       });
     }
 
