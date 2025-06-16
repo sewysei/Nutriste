@@ -40,8 +40,10 @@ export const getMealImage = async (req, res) => {
     const mealItems = mealPlan.response.meal_plan;
 
     for (let item of mealItems) {
-      const base64Image = await getImageForFoodBase64(item.food);
-      item.image = base64Image || null;
+      if (!item.image) {
+        const base64Image = await getImageForFoodBase64(item.food);
+        item.image = base64Image || null;
+      }
     }
 
     mealPlan.updatedAt = new Date();

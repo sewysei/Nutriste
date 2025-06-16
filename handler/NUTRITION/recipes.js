@@ -52,12 +52,14 @@ export const getRecipes = async (req, res) => {
           Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
         });
 
-        const mealRecipeText = updateMealRecipe.text;
-        const cleanedText = mealRecipeText.replace(/```json|```/g, "").trim();
+        const mealRecipeText = await updateMealRecipe.text;
+        const cleanedText = await mealRecipeText
+          .replace(/```json|```/g, "")
+          .trim();
         const mealRecipeJSON = JSON.parse(cleanedText);
 
         await mealRecipeModel.updateOne(
-          { recipeId },
+          { userId },
           {
             $set: {
               recipes: mealRecipeJSON,
@@ -69,7 +71,7 @@ export const getRecipes = async (req, res) => {
         return res.status(200).json({
           status: "Success",
           message: "Update resep baru",
-          recipe: mealRecipeJSON,
+          recipe: cleanedText,
         });
       } else {
         return res.status(200).json({
@@ -91,12 +93,14 @@ export const getRecipes = async (req, res) => {
         Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
       });
 
-      const mealRecipeText = updateMealRecipe.text;
-      const cleanedText = mealRecipeText.replace(/```json|```/g, "").trim();
+      const mealRecipeText = await updateMealRecipe.text;
+      const cleanedText = await mealRecipeText
+        .replace(/```json|```/g, "")
+        .trim();
       const mealRecipeJSON = JSON.parse(cleanedText);
 
       await mealRecipeModel.updateOne(
-        { recipeId },
+        { userId },
         {
           $set: {
             recipes: mealRecipeJSON,
@@ -109,7 +113,7 @@ export const getRecipes = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Membuat resep baru",
-        recipe: mealRecipeJSON,
+        recipe: cleanedText,
       });
     }
   } catch (err) {

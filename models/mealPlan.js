@@ -17,10 +17,6 @@ const mealPlanSchema = new Schema(
       required: true,
       default: false,
     },
-    recipeId: {
-      type: String,
-      required: true,
-    },
   },
   {
     timestamps: true,
