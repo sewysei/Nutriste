@@ -58,15 +58,12 @@ export const getMealPlan = async (req, res) => {
         item.image = null;
       }
 
-      const existingRecipeId = mealPlanData?.recipeId || nanoid(10);
-
       await MealPlanModel.updateOne(
         { userId },
         {
           $set: {
             response: mealPlanJson,
             updatedAt: new Date(),
-            recipeId: existingRecipeId,
           },
         },
         { upsert: true }
