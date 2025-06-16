@@ -24,6 +24,22 @@ const nutritionTargetSchema = new Schema(
       type: Number,
       required: true,
     },
+    calorieDiff: {
+      type: Number,
+      required: true,
+    },
+    carbohydrateDiff: {
+      type: Number,
+      required: true,
+    },
+    proteinDiff: {
+      type: Number,
+      required: true,
+    },
+    fatDiff: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,

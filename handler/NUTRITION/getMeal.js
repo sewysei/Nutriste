@@ -39,13 +39,13 @@ export const getMealPlan = async (req, res) => {
         tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
         Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata. Berikan saya Sarapan, Makan Siang, Snack, dan Makan Malam saja.
         Berikan juga makanan yang berbeda dari hari sebelumnya, kecuali jika tidak memungkinkan.
-        JSON harus berisi array dengan nama "meal_plan", dan setiap elemen adalah sebuah objek makanan dengan properti:
+        JSON harus berisi array dengan nama "meal_plan" yang hanya berisi 4 item, dan setiap elemen adalah sebuah objek makanan dengan properti:
         - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack, Makan Malam)
         - food (nama makanan atau menu)
         - calories (jumlah kalori dalam perhitungan Kcal, misalnya 500)
-        - protein (dalam gram, misalnya "20g")
-        - carbohydrates (dalam gram)
-        - fat (dalam gram)
+        - protein (dalam gram, misalnya 20)
+        - carbohydrates (dalam gram, misalnya 50)
+        - fat (dalam gram, misalnya 10)
         Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya JSON.
         Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya.`, // keep same prompt
       });
@@ -58,13 +58,12 @@ export const getMealPlan = async (req, res) => {
         item.image = null;
       }
 
-      await MealPlanModel.updateOne(
+      await MealPlanModel.replaceOne(
         { userId },
         {
-          $set: {
-            response: mealPlanJson,
-            updatedAt: new Date(),
-          },
+          userId,
+          response: mealPlanJson,
+          updatedAt: new Date(),
         },
         { upsert: true }
       );
