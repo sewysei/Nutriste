@@ -21,7 +21,6 @@ export const getNutritionSuggestion = async (req, res) => {
 
     const profile = await HealthProfileModel.findOne({ userId });
     if (!nutritionData || profile.updatedAt > nutritionData.updatedAt) {
-      // If not found, generate based on profile
       if (!profile) {
         return res.status(404).json({
           status: "Failed",

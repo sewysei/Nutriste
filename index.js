@@ -19,6 +19,7 @@ import { addProfile } from "./handler/NUTRITION/profile.js";
 import { getProfile } from "./handler/NUTRITION/getProfile.js";
 import { getNutritionSuggestion } from "./handler/NUTRITION/getNutrition.js";
 import { getMealPlan } from "./handler/NUTRITION/getMeal.js";
+import { getCaloriesInPeriod } from "./handler/NUTRITION/getCalories.js";
 import { getMealImage } from "./handler/NUTRITION/mealImages.js";
 import { getRecipes } from "./handler/NUTRITION/recipes.js";
 import { chatBot } from "./handler/CHATBOT/chatbot.js";
@@ -87,6 +88,8 @@ app.use("/uploads", express.static("uploads"));
 app.post("/profile", verifyToken, upload.single("photo"), addProfile);
 
 app.get("/profile", verifyToken, getProfile);
+
+app.get("/calories", verifyToken, getCaloriesInPeriod);
 
 app.get("/nutrition", verifyToken, getNutritionSuggestion);
 

@@ -16,8 +16,7 @@ export const getRecipes = async (req, res) => {
         message: "Meal plan not found",
       });
     }
-    const recipeId = checkMealPlan.recipeId;
-    let checkMealRecipe = await mealRecipeModel.findOne({ recipeId });
+    let checkMealRecipe = await mealRecipeModel.findOne({ userId });
     const foodsList = checkMealPlan.response.meal_plan
       .map((item) => item.food)
       .join(", ");

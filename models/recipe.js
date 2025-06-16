@@ -3,10 +3,10 @@ const { Schema } = mongoose;
 
 const mealRecipeSchema = new Schema(
   {
-    recipeId: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // or "UserModel" depending on your setup
       required: true,
-      unique: true,
     },
     recipes: {
       type: Object,

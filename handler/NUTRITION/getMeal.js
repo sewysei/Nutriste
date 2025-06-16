@@ -1,5 +1,6 @@
 import { MealPlanModel } from "../../models/mealPlan.js";
 import { HealthProfileModel } from "../../models/healthData.js"; // Needed to get user data
+import { getCalories } from "./countCalories.js";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import { nanoid } from "nanoid";
@@ -9,11 +10,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const getMealPlan = async (req, res) => {
   try {
-    console.log("===> getMealPlan triggered");
-
     const userId = req.userId;
     if (!userId) {
-      console.log("===> No user ID found");
       return res.status(401).json({
         status: "Failed",
         message: "Akses ditolak.",
@@ -23,8 +21,6 @@ export const getMealPlan = async (req, res) => {
     let mealPlanData = await MealPlanModel.findOne({ userId });
     const profile = await HealthProfileModel.findOne({ userId });
 
-    console.log("===> Found profile:", profile ? true : false);
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -33,11 +29,7 @@ export const getMealPlan = async (req, res) => {
       profile.updatedAt > mealPlanData.updatedAt ||
       new Date(mealPlanData.updatedAt).setHours(0, 0, 0, 0) < today;
 
-    console.log("===> Meal plan outdated:", mealPlanOutdated);
-
     if (mealPlanOutdated) {
-      console.log("===> Generating new meal plan...");
-
       const { age, gender, height, weight, healthCondition, purposes } =
         profile;
 
@@ -45,11 +37,12 @@ export const getMealPlan = async (req, res) => {
         model: "gemini-2.0-flash",
         contents: `Buat perencanaan makanan untuk seorang ${gender} usia ${age},
         tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
-        Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata.
+        Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata. Berikan saya Sarapan, Makan Siang, Snack, dan Makan Malam saja.
+        Berikan juga makanan yang berbeda dari hari sebelumnya, kecuali jika tidak memungkinkan.
         JSON harus berisi array dengan nama "meal_plan", dan setiap elemen adalah sebuah objek makanan dengan properti:
-        - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack Sore)
+        - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack, Makan Malam)
         - food (nama makanan atau menu)
-        - calories (jumlah kalori dalam angka)
+        - calories (jumlah kalori dalam perhitungan Kcal, misalnya 500)
         - protein (dalam gram, misalnya "20g")
         - carbohydrates (dalam gram)
         - fat (dalam gram)
@@ -61,13 +54,9 @@ export const getMealPlan = async (req, res) => {
       const cleanedText = mealPlanText.replace(/```json|```/g, "").trim();
       const mealPlanJson = JSON.parse(cleanedText);
 
-      console.log("===> Looping through meal items...");
-
       for (let item of mealPlanJson.meal_plan) {
         item.image = null;
       }
-
-      console.log("===> Saving meal plan to DB");
 
       const existingRecipeId = mealPlanData?.recipeId || nanoid(10);
 
@@ -82,7 +71,7 @@ export const getMealPlan = async (req, res) => {
         },
         { upsert: true }
       );
-
+      await getCalories(userId);
       return res.status(200).json({
         status: "Success",
         message: "Success updating meal plan",
