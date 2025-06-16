@@ -1,6 +1,7 @@
 import { NutritionDataModel } from "../../models/nutrition.js";
 import { HealthProfileModel } from "../../models/healthData.js";
 import { GoogleGenAI } from "@google/genai";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -86,7 +87,7 @@ export const getNutritionSuggestion = async (req, res) => {
         });
       }
 
-      await NutritionDataModel.updateOne(
+      const updatedNutrition = await NutritionDataModel.updateOne(
         { userId },
         {
           $set: {
@@ -99,7 +100,7 @@ export const getNutritionSuggestion = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Berhasil membuat data nutrisi. ",
-        suggestion: nutritionText,
+        suggestion: updatedNutrition.response,
       }); // Save and use this data
     }
     return res.status(200).json({

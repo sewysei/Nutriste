@@ -1,5 +1,8 @@
 import { CalorieTrackerModel } from "../../models/calorieTracker.js";
 import { getCalories } from "./countCalories.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getCaloriesInPeriod = async (req, res) => {
   const days = parseInt(req.query.days) || 7; // Default to 7 days if not specified

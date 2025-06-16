@@ -1,5 +1,8 @@
 import { getImageForFoodBase64 } from "./getMealImage.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getMealImage = async (req, res) => {
   try {

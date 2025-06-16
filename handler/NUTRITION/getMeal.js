@@ -2,6 +2,7 @@ import { MealPlanModel } from "../../models/mealPlan.js";
 import { HealthProfileModel } from "../../models/healthData.js"; // Needed to get user data
 import { getCalories } from "./countCalories.js";
 import { GoogleGenAI } from "@google/genai";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 

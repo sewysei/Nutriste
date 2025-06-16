@@ -1,4 +1,7 @@
 import { HealthProfileModel } from "../../models/healthData.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getProfile = async (req, res) => {
   try {

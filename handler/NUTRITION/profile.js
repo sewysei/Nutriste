@@ -1,5 +1,8 @@
 import { HealthProfileModel } from "../../models/healthData.js";
 import { UserModel } from "../../models/users.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const addProfile = async (req, res) => {
   const {

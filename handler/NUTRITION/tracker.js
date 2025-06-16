@@ -1,5 +1,8 @@
 import { NutritionTargetModel } from "../../models/nutritionTarget.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const nutritionTarget = async (req, res) => {
   try {
