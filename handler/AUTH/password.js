@@ -52,10 +52,11 @@ export const googlePassword = async (req, res) => {
 
     await user.save();
 
+    const addPassword = true;
     res.status(200).json({
       status: "Success",
-      message:
-        "Password berhasil ditambahkan. Untuk login manual silahkan cek email kamu untuk verifikasi akun.",
+      message: "Password berhasil ditambahkan.",
+      addPassword: addPassword,
     });
   } catch (err) {
     res.status(500).json({

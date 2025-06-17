@@ -98,18 +98,6 @@ export const googleCallbackLogin = async (req, res) => {
         `https://nutriste-black.vercel.app/menu-utama?token=${token}`
       );
     }
-    //return res.redirect(`https://`)
-
-    // return res.status(200).json({
-    //   status: "Success",
-    //   message: "Login berhasil",
-    //   token,
-    //   user: {
-    //     id: user._id,
-    //     username: user.username,
-    //     email: user.email,
-    //   },
-    // });
   } catch (err) {
     console.error("Error in googleCallbackLogin:", err);
     return res.status(500).json({
