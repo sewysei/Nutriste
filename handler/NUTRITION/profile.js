@@ -7,6 +7,7 @@ dotenv.config();
 export const addProfile = async (req, res) => {
   const {
     age,
+    name,
     gender,
     height,
     weight,
@@ -21,6 +22,7 @@ export const addProfile = async (req, res) => {
 
   if (
     age === undefined ||
+    name === undefined ||
     gender === undefined ||
     height === undefined ||
     weight === undefined ||
@@ -85,6 +87,9 @@ export const addProfile = async (req, res) => {
 
     if (existingProfile) {
       existingProfile.age = age;
+      existingProfile.name = name;
+      existingProfile.username = user.username;
+      existingProfile.email = user.email;
       existingProfile.gender = gender;
       existingProfile.height = height;
       existingProfile.weight = weight;
@@ -119,6 +124,9 @@ export const addProfile = async (req, res) => {
     const newHealthProfile = new HealthProfileModel({
       userId,
       age,
+      name,
+      username: user.username,
+      email: user.email,
       gender,
       height,
       weight,

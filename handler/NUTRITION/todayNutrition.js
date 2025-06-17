@@ -1,6 +1,6 @@
-import { MealPlanModel } from "../../models/mealPlan.js";
 import { checkToken } from "../AUTH/checkToken.js";
 import { NutritionTargetModel } from "../../models/nutritionTarget.js ";
+import { getNutritionSummary } from "./getIsEaten.js";
 import dotenv from "dotenv";
 dotenv.config();
 export const getTodayNutrition = async (req, res) => {
@@ -26,10 +26,7 @@ export const getTodayNutrition = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const mealPlanData = await MealPlanModel.findOne({
-      userId,
-      updatedAt: { $gte: today },
-    });
+    const mealPlanData = await getNutritionSummary(userId);
 
     if (!mealPlanData) {
       return res.status(404).json({
@@ -37,6 +34,7 @@ export const getTodayNutrition = async (req, res) => {
         message: "Meal plan tidak ditemukan untuk hari ini.",
       });
     }
+
     const nutritionTarget = await NutritionTargetModel.findOne({ userId });
 
     if (!nutritionTarget) {
@@ -45,17 +43,10 @@ export const getTodayNutrition = async (req, res) => {
         message: "Target nutrisi tidak ditemukan.",
       });
     }
-    let totalCalories = 0;
-    let totalProtein = 0;
-    let totalCarbohydrates = 0;
-    let totalFat = 0;
-    // Hitung total kalori dan nutrisi
-    for (const meal of mealPlanData.response.meal_plan) {
-      totalCalories += meal.calories; // Pastikan ada properti calories
-      totalProtein += meal.protein; // Pastikan ada properti protein
-      totalCarbohydrates += meal.carbohydrates; // Pastikan ada properti carbohydrates
-      totalFat = meal.fat; // Pastikan ada properti fat
-    }
+    let totalCalories = mealPlanData.totalCalories;
+    let totalProtein = mealPlanData.totalProtein;
+    let totalCarbohydrates = mealPlanData.totalCarbohydrates;
+    let totalFat = mealPlanData.totalFat;
 
     let percentageCalories = (totalCalories / nutritionTarget.calorie) * 100;
     let percentageProtein = (totalProtein / nutritionTarget.protein) * 100;

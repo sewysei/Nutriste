@@ -41,7 +41,7 @@ export const getRecipes = async (req, res) => {
     }
     let checkMealRecipe = await mealRecipeModel.findOne({ userId });
     const foodsList = checkMealPlan.response.meal_plan
-      .map((item) => item.food)
+      .map((item) => item.description)
       .join(", ");
 
     if (checkMealRecipe) {
@@ -103,7 +103,7 @@ export const getRecipes = async (req, res) => {
       const cleanedText = await mealRecipeText
         .replace(/```json|```/g, "")
         .trim();
-      const mealRecipeJSON = JSON.parse(cleanedText);
+      const mealRecipeJSON = await JSON.parse(cleanedText);
 
       await mealRecipeModel.updateOne(
         { userId },
@@ -119,7 +119,7 @@ export const getRecipes = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Membuat resep baru",
-        recipe: cleanedText,
+        recipe: mealRecipeJSON,
       });
     }
   } catch (err) {

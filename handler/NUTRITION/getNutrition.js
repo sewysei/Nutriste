@@ -108,7 +108,7 @@ export const getNutritionSuggestion = async (req, res) => {
       return res.status(200).json({
         status: "Success",
         message: "Berhasil membuat data nutrisi. ",
-        suggestion: updatedNutrition.response,
+        suggestion: nutritionJson,
       }); // Save and use this data
     }
     return res.status(200).json({

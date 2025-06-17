@@ -30,6 +30,8 @@ import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 import { resendOTP } from "./handler/AUTH/sendOTP.js";
 import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
 import { getNutritionSummary } from "./handler/NUTRITION/getIsEaten.js";
+import { getSpecificRecipe } from "./handler/NUTRITION/specificRecipe.js";
+import { get } from "mongoose";
 
 const app = express();
 
@@ -107,6 +109,8 @@ app.get("/meal-plan-images", getMealImage);
 app.get("/nutrition-summary", getNutritionSummary);
 
 app.get("/recipes", getRecipes);
+
+app.post("/specific-recipe", getSpecificRecipe);
 
 app.post("/chat", chatBot);
 

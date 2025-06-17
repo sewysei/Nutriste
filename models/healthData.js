@@ -8,6 +8,18 @@ const healthProfileSchema = new Schema(
       ref: "User", // or "UserModel" depending on your setup
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
     gender: {
       type: String,
       required: true,

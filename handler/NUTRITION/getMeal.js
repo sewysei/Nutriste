@@ -70,10 +70,12 @@ export const getMealPlan = async (req, res) => {
         Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata. Berikan saya Sarapan, Makan Siang, Snack, dan Makan Malam saja.
         Berikan makanan yang berbeda setiap generate.
         JSON harus berisi array dengan nama "meal_plan" yang hanya berisi 4 item, dan setiap elemen adalah sebuah objek makanan dengan properti:
+        - index (nomor urut makanan, mulai dari 0)
         - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack, Makan Malam)
         - time(waktu makan dalam format HH:MM, misalnya 08:00) 
         - food (nama makanan taruh makanan yang fotonya diambil di paling depan,
           bagi setiap makanan dengan "-", misalnya "Nasi Goreng-Ayam Bakar-Ikan kukus" jangan gunakan "dan")
+        - description (deskripsi singkat tentang makanan, misalnya "Nasi goreng dengan ayam bakar dan ikan kukus")
         - calories (jumlah kalori dalam perhitungan Kcal, misalnya 500)
         - protein (dalam gram, misalnya 20)
         - carbohydrates (dalam gram, misalnya 50)
@@ -108,14 +110,10 @@ export const getMealPlan = async (req, res) => {
       });
     }
 
-    const mealPlanWithoutImage = await mealPlanData.response.meal_plan.map(
-      ({ image, ...rest }) => rest
-    );
-
     return res.status(200).json({
       status: "Success",
       message: "Success fetching meal plan from database",
-      suggestion: { meal_plan: mealPlanWithoutImage },
+      suggestion: mealPlanData.response,
     });
   } catch (err) {
     res.status(500).json({
