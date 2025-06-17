@@ -62,7 +62,7 @@ export const addProfile = async (req, res) => {
   }
   try {
     const BMI = weight / ((height * height) / 10000);
-    const status = "Normal"; // Default status
+    let status = "Normal"; // Default status
     if (BMI < 18.5) {
       status = "Under";
     } else if (BMI >= 18.5 && BMI < 24.9) {
