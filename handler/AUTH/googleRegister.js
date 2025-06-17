@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import dotenv from "dotenv";
 import { UserModel } from "../../models/users.js";
+import e from "express";
 dotenv.config();
 
 const oauth2Client = new google.auth.OAuth2(
@@ -92,6 +93,10 @@ export const googleCallbackLogin = async (req, res) => {
     if (user.password === "-") {
       return res.redirect(
         `https://nutriste-black.vercel.app/forgot-password/set-password?token=${token}`
+      );
+    } else if (!user.isFilled && user.password !== "-") {
+      return res.redirect(
+        `https://nutriste-black.vercel.app/on-board-form?token=${token}`
       );
     } else {
       return res.redirect(
