@@ -1,10 +1,33 @@
 import { getImageForFoodBase64 } from "./getMealImage.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
+import { checkToken } from "../AUTH/checkToken.js"; // sesuaikan path
+import dotenv from "dotenv";
+dotenv.config();
 
-export const getMealImageByUserId = async (userId) => {
+export const getMealImage = async (req, res) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        status: "Failed",
+        message: "Tidak ada token dikirim.",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    const { valid, expired, decoded } = checkToken(token);
+    if (!valid) {
+      return res.status(401).json({
+        status: "Failed",
+        message: expired ? "Token expired." : "Token invalid.",
+      });
+    }
+    const userId = decoded.userId;
+    // Check if userId is present
     if (!userId) {
-      throw new Error("userId tidak valid");
+      return res.status(401).json({
+        status: "Failed",
+        message: "Akses ditolak.",
+      });
     }
 
     const mealPlan = await MealPlanModel.findOne({ userId });
@@ -14,7 +37,10 @@ export const getMealImageByUserId = async (userId) => {
       !mealPlan.response ||
       !Array.isArray(mealPlan.response.meal_plan)
     ) {
-      throw new Error("Data meal plan tidak ditemukan.");
+      return res.status(404).json({
+        status: "Failed",
+        message: "Data meal plan tidak ditemukan.",
+      });
     }
 
     const mealItems = mealPlan.response.meal_plan;
@@ -30,12 +56,15 @@ export const getMealImageByUserId = async (userId) => {
     mealPlan.markModified("response");
     await mealPlan.save();
 
-    return {
+    return res.status(200).json({
       status: "Success",
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
       updatedMealPlan: mealPlan.response,
-    };
+    });
   } catch (err) {
-    throw new Error("Gagal mengambil gambar meal: " + err.message);
+    return res.status(500).json({
+      status: "Failed",
+      message: `Catch error ${err.message}`,
+    });
   }
 };

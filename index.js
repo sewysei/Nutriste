@@ -30,6 +30,7 @@ import { resendOTP } from "./handler/AUTH/sendOTP.js";
 import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
 import { getNutritionSummary } from "./handler/NUTRITION/getIsEaten.js";
 import { getSpecificRecipe } from "./handler/NUTRITION/specificRecipe.js";
+import { getMealImage } from "./handler/NUTRITION/mealImages.js";
 
 const app = express();
 
@@ -97,6 +98,8 @@ app.get("/calories", getCaloriesInPeriod);
 app.get("/nutrition", getNutritionSuggestion);
 
 app.get("/meal-plan", getMealPlan);
+
+app.get("/meal-plan-images", getMealImage);
 
 app.get("/fun-fact", getFact);
 
