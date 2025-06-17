@@ -16,6 +16,7 @@ import { resetPassword } from "./handler/AUTH/resetPass.js";
 import { addProfile } from "./handler/NUTRITION/profile.js";
 import { getProfile } from "./handler/NUTRITION/getProfile.js";
 import { getNutritionSuggestion } from "./handler/NUTRITION/getNutrition.js";
+import { getTodayNutrition } from "./handler/NUTRITION/todayNutrition.js";
 import { getMealPlan } from "./handler/NUTRITION/getMeal.js";
 import { getCaloriesInPeriod } from "./handler/NUTRITION/getCalories.js";
 import { getFact } from "./handler/NUTRITION/getFact.js";
@@ -87,6 +88,8 @@ app.use("/uploads", express.static("uploads"));
 app.post("/profile", upload.single("photo"), addProfile);
 
 app.get("/profile", getProfile);
+
+app.get("/nutrition-today", getTodayNutrition);
 
 app.get("/calories", getCaloriesInPeriod);
 

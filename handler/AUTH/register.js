@@ -7,8 +7,6 @@ dotenv.config();
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
-    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const existingUser = await UserModel.findOne({ email });
@@ -34,26 +32,10 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    if (!usernameRegex.test(username)) {
-      return res.status(400).json({
-        status: "Failed",
-        message:
-          "Username harus diantara 3-20 karakter dan hanya mengandung huruf, angka, dan underscore.",
-      });
-    }
-
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         status: "Failed",
         message: "Tolong masukkan email yang valid.",
-      });
-    }
-
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        status: "Failed",
-        message:
-          "Password harus setidaknya 8 karakter dan mengandung setidaknya satu huruf dan satu angka.",
       });
     }
 
