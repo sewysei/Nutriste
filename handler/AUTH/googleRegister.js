@@ -96,7 +96,9 @@ export const googleCallbackLogin = async (req, res) => {
       );
     } else if (!user.isFilled && user.password !== "-") {
       return res.redirect(
-        `https://nutriste-black.vercel.app/on-board-form?token=${token}`
+        `https://nutriste-black.vercel.app/on-board-form?token=${token}&username=${encodeURIComponent(
+          user.username
+        )}`
       );
     } else {
       return res.redirect(
