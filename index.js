@@ -84,7 +84,7 @@ app.post("/auth/resend-otp", resendOTP);
 
 app.post("/auth/reset-password", resetPassword);
 
-app.post("/auth/logout", logoutUser);
+app.get("/auth/logout", logoutUser);
 
 app.use("/uploads", express.static("uploads"));
 
