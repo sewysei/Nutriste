@@ -47,19 +47,32 @@ export const getMealPlan = async (req, res) => {
       new Date(mealPlanData.updatedAt).setHours(0, 0, 0, 0) < today;
 
     if (mealPlanOutdated) {
-      const { age, gender, height, weight, healthCondition, purposes } =
-        profile;
+      const {
+        age,
+        gender,
+        height,
+        weight,
+        healthCondition,
+        foodRestrictions,
+        activity,
+        activeStatus,
+        mealsPerDay,
+        favouriteFood,
+        purposes,
+      } = profile;
 
       const mealPlanResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
         contents: `Buat perencanaan makanan untuk seorang ${gender} usia ${age},
-        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, dan tujuan ${purposes}.
+        tinggi ${height} cm, berat ${weight} kg, dengan kondisi kesehatan ${healthCondition}, pantang makan ${foodRestrictions},
+        dengan aktivitas harian${activity} yang mempunyai tingkat keaktifan ${activeStatus}, makan ${mealsPerDay} setiap harinya, 
+        mempunyai makanan favorit ${favouriteFood} dan tujuan ${purposes}.
         Tulis hasil dalam format JSON. Jawaban tidak boleh lebih dari 300 kata. Berikan saya Sarapan, Makan Siang, Snack, dan Makan Malam saja.
-        Berikan juga makanan yang berbeda dari hari sebelumnya, kecuali jika tidak memungkinkan.
+        Berikan makanan yang berbeda setiap generate.
         JSON harus berisi array dengan nama "meal_plan" yang hanya berisi 4 item, dan setiap elemen adalah sebuah objek makanan dengan properti:
         - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack, Makan Malam)
         - time(waktu makan dalam format HH:MM, misalnya 08:00) 
-        - food (nama makanan atau menu)
+        - food (nama makanan atau menu, bagi setiap makanan dengan koma, misalnya "Nasi Goreng, Ayam Bakar" jangan gunakan dan)
         - calories (jumlah kalori dalam perhitungan Kcal, misalnya 500)
         - protein (dalam gram, misalnya 20)
         - carbohydrates (dalam gram, misalnya 50)
