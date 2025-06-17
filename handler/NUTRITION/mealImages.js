@@ -48,7 +48,7 @@ export const getMealImage = async (req, res) => {
     for (let item of mealItems) {
       if (!item.image) {
         const base64Image = await getImageForFoodBase64(item.food);
-        item.image = base64Image || null;
+        item.image = base64Image;
       }
     }
 
