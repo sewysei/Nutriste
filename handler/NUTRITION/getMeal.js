@@ -58,6 +58,7 @@ export const getMealPlan = async (req, res) => {
         Berikan juga makanan yang berbeda dari hari sebelumnya, kecuali jika tidak memungkinkan.
         JSON harus berisi array dengan nama "meal_plan" yang hanya berisi 4 item, dan setiap elemen adalah sebuah objek makanan dengan properti:
         - meal_time (waktu makan seperti: Sarapan, Makan Siang, Snack, Makan Malam)
+        - time(waktu makan dalam format HH:MM, misalnya 08:00) 
         - food (nama makanan atau menu)
         - calories (jumlah kalori dalam perhitungan Kcal, misalnya 500)
         - protein (dalam gram, misalnya 20)
