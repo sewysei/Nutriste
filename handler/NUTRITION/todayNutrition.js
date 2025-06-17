@@ -58,9 +58,24 @@ export const getTodayNutrition = async (req, res) => {
     }
 
     let percentageCalories = (totalCalories / nutritionTarget.calorie) * 100;
+    let percentageProtein = (totalProtein / nutritionTarget.protein) * 100;
+    let percentageCarbohydrates =
+      (totalCarbohydrates / nutritionTarget.carbohydrate) * 100;
+    let percentageFat = (totalFat / nutritionTarget.fat) * 100;
+
     if (percentageCalories > 100) {
       percentageCalories = 100;
     }
+    if (percentageProtein > 100) {
+      percentageProtein = 100;
+    }
+    if (percentageCarbohydrates > 100) {
+      percentageCarbohydrates = 100;
+    }
+    if (percentageFat > 100) {
+      percentageFat = 100;
+    }
+    // Kembalikan data nutrisi hari ini
 
     res.status(200).json({
       status: "Success",
@@ -69,6 +84,9 @@ export const getTodayNutrition = async (req, res) => {
       totalCarbohydrates,
       totalFat,
       percentageCalories: percentageCalories.toFixed(2),
+      percentageProtein: percentageProtein.toFixed(2),
+      percentageCarbohydrates: percentageCarbohydrates.toFixed(2),
+      percentageFat: percentageFat.toFixed(2),
       nutritionTarget,
     });
   } catch (error) {
