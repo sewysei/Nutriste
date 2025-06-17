@@ -38,7 +38,7 @@ export const getProfile = async (req, res) => {
     } else {
       res.status(200).json({
         status: "Success",
-        msg: "Profil Kesehatan ditemukan.",
+        message: "Profil Kesehatan ditemukan.",
         data: checkUser,
       });
     }

@@ -129,9 +129,9 @@ export const addProfile = async (req, res) => {
       mealsPerDay,
       favouriteFood,
       purposes,
-      photo: photoBase64,
       BMI,
       status,
+      photo: photoBase64,
     });
     const savedProfile = await newHealthProfile.save();
 
