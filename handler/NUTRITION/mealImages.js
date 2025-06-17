@@ -1,33 +1,10 @@
 import { getImageForFoodBase64 } from "./getMealImage.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
-import { checkToken } from "../AUTH/checkToken.js"; // sesuaikan path
-import dotenv from "dotenv";
-dotenv.config();
 
-export const getMealImage = async (req, res) => {
+export const getMealImageByUserId = async (userId) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        status: "Failed",
-        message: "Tidak ada token dikirim.",
-      });
-    }
-    const token = authHeader.split(" ")[1];
-    const { valid, expired, decoded } = checkToken(token);
-    if (!valid) {
-      return res.status(401).json({
-        status: "Failed",
-        message: expired ? "Token expired." : "Token invalid.",
-      });
-    }
-    const userId = decoded.userId;
-    // Check if userId is present
     if (!userId) {
-      return res.status(401).json({
-        status: "Failed",
-        message: "Akses ditolak.",
-      });
+      throw new Error("userId tidak valid");
     }
 
     const mealPlan = await MealPlanModel.findOne({ userId });
@@ -37,10 +14,7 @@ export const getMealImage = async (req, res) => {
       !mealPlan.response ||
       !Array.isArray(mealPlan.response.meal_plan)
     ) {
-      return res.status(404).json({
-        status: "Failed",
-        message: "Data meal plan tidak ditemukan.",
-      });
+      throw new Error("Data meal plan tidak ditemukan.");
     }
 
     const mealItems = mealPlan.response.meal_plan;
@@ -56,17 +30,12 @@ export const getMealImage = async (req, res) => {
     mealPlan.markModified("response");
     await mealPlan.save();
 
-    const imagesOnly = mealPlan.response.meal_plan.map((item) => item.image);
-
-    return res.status(200).json({
+    return {
       status: "Success",
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
-      updatedMealPlan: imagesOnly,
-    });
+      updatedMealPlan: mealPlan.response,
+    };
   } catch (err) {
-    return res.status(500).json({
-      status: "Failed",
-      message: `Catch error ${err.message}`,
-    });
+    throw new Error("Gagal mengambil gambar meal: " + err.message);
   }
 };

@@ -3,6 +3,7 @@ import { HealthProfileModel } from "../../models/healthData.js"; // Needed to ge
 import { getCalories } from "./countCalories.js";
 import { GoogleGenAI } from "@google/genai";
 import { checkToken } from "../AUTH/checkToken.js"; // sesuaikan path
+import { getMealImageByUserId } from "./mealImages.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -89,10 +90,6 @@ export const getMealPlan = async (req, res) => {
       const cleanedText = await mealPlanText.replace(/```json|```/g, "").trim();
       const mealPlanJson = await JSON.parse(cleanedText);
 
-      for (let item of mealPlanJson.meal_plan) {
-        item.image = null;
-      }
-
       await MealPlanModel.replaceOne(
         { userId },
         {
@@ -102,6 +99,8 @@ export const getMealPlan = async (req, res) => {
         },
         { upsert: true }
       );
+
+      await getMealImageByUserId(userId);
       await getCalories(userId);
       return res.status(200).json({
         status: "Success",

@@ -20,7 +20,6 @@ import { getTodayNutrition } from "./handler/NUTRITION/todayNutrition.js";
 import { getMealPlan } from "./handler/NUTRITION/getMeal.js";
 import { getCaloriesInPeriod } from "./handler/NUTRITION/getCalories.js";
 import { getFact } from "./handler/NUTRITION/getFact.js";
-import { getMealImage } from "./handler/NUTRITION/mealImages.js";
 import { getRecipes } from "./handler/NUTRITION/recipes.js";
 import { chatBot } from "./handler/CHATBOT/chatbot.js";
 import { getChatHistory } from "./handler//CHATBOT/getChatHistory.js";
@@ -31,7 +30,6 @@ import { resendOTP } from "./handler/AUTH/sendOTP.js";
 import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
 import { getNutritionSummary } from "./handler/NUTRITION/getIsEaten.js";
 import { getSpecificRecipe } from "./handler/NUTRITION/specificRecipe.js";
-import { get } from "mongoose";
 
 const app = express();
 
@@ -103,8 +101,6 @@ app.get("/meal-plan", getMealPlan);
 app.get("/fun-fact", getFact);
 
 app.post("/target-nutrition", nutritionTarget);
-
-app.get("/meal-plan-images", getMealImage);
 
 app.get("/nutrition-summary", getNutritionSummary);
 
