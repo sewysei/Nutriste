@@ -12,11 +12,6 @@ const mealPlanSchema = new Schema(
       type: Object,
       required: true,
     },
-    isEaten: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
   },
   {
     timestamps: true,

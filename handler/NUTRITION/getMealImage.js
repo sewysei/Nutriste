@@ -21,18 +21,22 @@ export const getImageForFoodBase64 = async (foodName) => {
           key: GOOGLE_API_KEY,
           cx: GOOGLE_CX,
           searchType: "image",
-          q: foodName,
-          num: 1,
+          q: firstItem,
+          num: 3, // cari 5 hasil
         },
       }
     );
 
-    if (!searchRes.data.items || searchRes.data.items.length === 0) {
-      console.warn(`No image found for: ${foodName}`);
+    const imageItem = searchRes.data.items.find((item) =>
+      item.link.match(/\.(jpg|jpeg|png|webp)$/i)
+    );
+
+    if (!imageItem) {
+      console.warn(`No direct image found for: ${foodName}`);
       return null;
     }
 
-    const imageUrl = searchRes.data.items[0].link;
+    const imageUrl = imageItem.link;
 
     const imgRes = await axios.get(imageUrl, {
       responseType: "arraybuffer",
