@@ -37,7 +37,7 @@ export const loginUser = async (req, res) => {
         });
       }
     }
-    const isMatch = bcrypt.compare(password, checkUser.password);
+    const isMatch = await bcrypt.compare(password, checkUser.password);
     if (!isMatch) {
       return res
         .status(400)
