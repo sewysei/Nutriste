@@ -1,7 +1,7 @@
 import { mealRecipeModel } from "../../models/recipe.js";
 import { MealPlanModel } from "../../models/mealPlan.js";
 import { GoogleGenAI } from "@google/genai";
-import jwt from "jsonwebtoken";
+import { checkToken } from "../AUTH/checkToken.js"; // sesuaikan path
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -17,7 +17,13 @@ export const getRecipes = async (req, res) => {
       });
     }
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { valid, expired, decoded } = checkToken(token);
+    if (!valid) {
+      return res.status(401).json({
+        status: "Failed",
+        message: expired ? "Token expired." : "Token invalid.",
+      });
+    }
     const userId = decoded.userId;
     // Check if userId is present
     if (!userId) {

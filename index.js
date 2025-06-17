@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDB } from "./db.js";
-// import { verifyToken } from "./verifyToken.js";
 import { upload } from "./uploadFile.js";
 import { registerUser } from "./handler/AUTH/register.js";
 import { googleSignIn } from "./handler/AUTH/googleRegister.js";
@@ -30,7 +29,6 @@ import { logoutUser } from "./handler/AUTH/logout.js";
 import { verifyOTP } from "./handler/AUTH/verifyOTP.js";
 import { resendOTP } from "./handler/AUTH/sendOTP.js";
 import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
-// import { getToken } from "./handler/AUTH/getToken.js";
 
 const app = express();
 
@@ -85,9 +83,7 @@ app.post("/auth/reset-password", resetPassword);
 
 app.post("/auth/logout", logoutUser);
 
-// app.get("/auth/get-token", verifyToken, getToken);
-
-app.use("/uploads", express.static("uploads"));
+app.app.use("/uploads", express.static("uploads"));
 
 app.post("/profile", upload.single("photo"), addProfile);
 
