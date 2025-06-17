@@ -6,7 +6,6 @@ dotenv.config();
 
 export const resetPassword = async (req, res) => {
   const { email, newPassword, confirmPassword } = req.body;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
   if (!newPassword || !confirmPassword) {
     return res.status(400).json({
@@ -19,14 +18,6 @@ export const resetPassword = async (req, res) => {
     return res.status(400).json({
       status: "Failed",
       message: "Password tidak cocok",
-    });
-  }
-
-  if (!passwordRegex.test(newPassword)) {
-    return res.status(400).json({
-      status: "Failed",
-      message:
-        "Password harus setidaknya 8 karakter dan mengandung setidaknya satu huruf dan satu angka.",
     });
   }
 

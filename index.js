@@ -55,9 +55,9 @@ app.use(express.json());
 connectDB();
 
 app.get("/", (req, res) => {
-  const msg = "Hello World";
+  const message = "Hello World";
   res.json({
-    msg,
+    message,
   });
 });
 
