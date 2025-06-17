@@ -62,6 +62,16 @@ export const addProfile = async (req, res) => {
   }
   try {
     const BMI = weight / ((height * height) / 10000);
+    const status = "Normal"; // Default status
+    if (BMI < 18.5) {
+      status = "Under";
+    } else if (BMI >= 18.5 && BMI < 24.9) {
+      status = "Normal";
+    } else if (BMI >= 25 && BMI < 29.9) {
+      status = "Over";
+    } else {
+      status = "Obese";
+    }
 
     let photoBase64 = null;
     if (req.file) {
@@ -86,6 +96,7 @@ export const addProfile = async (req, res) => {
       existingProfile.favouriteFood = favouriteFood;
       existingProfile.purposes = purposes;
       existingProfile.BMI = BMI;
+      existingProfile.status = status;
 
       if (photoBase64) {
         existingProfile.photo = photoBase64;
@@ -120,6 +131,7 @@ export const addProfile = async (req, res) => {
       purposes,
       photo: photoBase64,
       BMI,
+      status,
     });
     const savedProfile = await newHealthProfile.save();
 
