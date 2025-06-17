@@ -31,6 +31,7 @@ import { nutritionTarget } from "./handler/NUTRITION/tracker.js";
 import { getNutritionSummary } from "./handler/NUTRITION/getIsEaten.js";
 import { getSpecificRecipe } from "./handler/NUTRITION/specificRecipe.js";
 import { getMealImage } from "./handler/NUTRITION/mealImages.js";
+import { getTips } from "./handler/NUTRITION/tipsSehat.js";
 
 const app = express();
 
@@ -110,6 +111,8 @@ app.get("/nutrition-summary", getNutritionSummary);
 app.get("/recipes", getRecipes);
 
 app.post("/specific-recipe", getSpecificRecipe);
+
+app.get("/tips", getTips);
 
 app.post("/chat", chatBot);
 
