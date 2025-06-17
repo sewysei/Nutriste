@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import dotenv from "dotenv";
 import { UserModel } from "../../models/users.js";
-import e from "express";
 dotenv.config();
 
 const oauth2Client = new google.auth.OAuth2(

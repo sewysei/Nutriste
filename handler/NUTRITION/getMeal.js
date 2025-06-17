@@ -106,10 +106,14 @@ export const getMealPlan = async (req, res) => {
       });
     }
 
+    const mealPlanWithoutImage = mealPlanData.response.meal_plan.map(
+      ({ image, ...rest }) => rest
+    );
+
     return res.status(200).json({
       status: "Success",
       message: "Success fetching meal plan from database",
-      suggestion: mealPlanData.response,
+      suggestion: { meal_plan: mealPlanWithoutImage },
     });
   } catch (err) {
     res.status(500).json({

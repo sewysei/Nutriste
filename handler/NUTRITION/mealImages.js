@@ -56,10 +56,12 @@ export const getMealImage = async (req, res) => {
     mealPlan.markModified("response");
     await mealPlan.save();
 
+    const imagesOnly = mealPlan.response.meal_plan.map((item) => item.image);
+
     return res.status(200).json({
       status: "Success",
       message: "Gambar berhasil ditambahkan ke meal plan dan disimpan",
-      updatedMealPlan: mealPlan.response,
+      updatedMealPlan: imagesOnly,
     });
   } catch (err) {
     return res.status(500).json({

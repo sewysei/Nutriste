@@ -1,6 +1,6 @@
 import { MealPlanModel } from "../../models/mealPlan.js";
 import { checkToken } from "../AUTH/checkToken.js";
-import { NutritionTargetModel } from "../../models/nutritionTarget.js";
+import { NutritionTargetModel } from "../../models/nutritionTarget.js ";
 import dotenv from "dotenv";
 dotenv.config();
 export const getTodayNutrition = async (req, res) => {
@@ -57,12 +57,18 @@ export const getTodayNutrition = async (req, res) => {
       totalFat = meal.fat; // Pastikan ada properti fat
     }
 
+    let percentageCalories = (totalCalories / nutritionTarget.calorie) * 100;
+    if (percentageCalories > 100) {
+      percentageCalories = 100;
+    }
+
     res.status(200).json({
       status: "Success",
       totalCalories,
       totalProtein,
       totalCarbohydrates,
       totalFat,
+      percentageCalories: percentageCalories.toFixed(2),
       nutritionTarget,
     });
   } catch (error) {
