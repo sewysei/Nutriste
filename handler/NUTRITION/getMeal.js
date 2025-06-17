@@ -106,7 +106,7 @@ export const getMealPlan = async (req, res) => {
       });
     }
 
-    const mealPlanWithoutImage = mealPlanData.response.meal_plan.map(
+    const mealPlanWithoutImage = await mealPlanData.response.meal_plan.map(
       ({ image, ...rest }) => rest
     );
 
