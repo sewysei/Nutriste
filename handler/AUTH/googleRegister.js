@@ -89,25 +89,27 @@ export const googleCallbackLogin = async (req, res) => {
       expiresIn: "7d",
     });
 
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "Strict",
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    // });
-
+    if (user.password === "-") {
+      return res.redirect(
+        `https://nutriste-black.vercel.app/forgot-password/set-password?token=${token}`
+      );
+    } else {
+      return res.redirect(
+        `https://nutriste-black.vercel.app/menu-utama?token=${token}`
+      );
+    }
     //return res.redirect(`https://`)
 
-    return res.status(200).json({
-      status: "Success",
-      message: "Login berhasil",
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
+    // return res.status(200).json({
+    //   status: "Success",
+    //   message: "Login berhasil",
+    //   token,
+    //   user: {
+    //     id: user._id,
+    //     username: user.username,
+    //     email: user.email,
+    //   },
+    // });
   } catch (err) {
     console.error("Error in googleCallbackLogin:", err);
     return res.status(500).json({
