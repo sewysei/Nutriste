@@ -1,5 +1,4 @@
 import express from "express";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -83,7 +82,7 @@ app.post("/auth/reset-password", resetPassword);
 
 app.post("/auth/logout", logoutUser);
 
-app.app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.post("/profile", upload.single("photo"), addProfile);
 
