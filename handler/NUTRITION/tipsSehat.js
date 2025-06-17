@@ -13,7 +13,7 @@ export const getTips = async (req, res) => {
         deskripsi: string // deskripsi tips
     }.
     Jangan gunakan tanda cetak tebal, bintang, atau frasa pembuka seperti "Tentu" atau "Berikut adalah". Jawaban hanya string.
-    Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya. Berikan 4 tips saja
+    Jangan gunakan backtick, tanda kutip tiga, atau format markdown lainnya. Berikan 4 tips saja, deskripsi singkat, dan tidak lebih dari 100 kata untuk setiap tips.
     Berikan saya tips yang belum pernah saya dengar sebelumnya, dan tidak terlalu umum.`,
   });
   const funFactText = funFact.text;
