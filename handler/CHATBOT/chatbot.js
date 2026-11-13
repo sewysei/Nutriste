@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { ChatHistory } from "../../models/chatbotHistory.js";
-import { checkToken } from "../AUTH/checkToken.js"; // sesuaikan path
+import { checkToken } from "../AUTH/checkToken.js";
 import dotenv from "dotenv";
 dotenv.config();
 
